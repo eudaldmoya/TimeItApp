@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:timeitapp/firebase_options.dart';
+import 'package:timeitapp/screens/chat.dart';
 import 'package:timeitapp/widgets/auth_gate.dart';
 
 void main() async {
@@ -41,44 +42,48 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     final db = FirebaseFirestore.instance;
     return MaterialApp(
-      home: Scaffold(
-        body: Center(
-            child: StreamBuilder(
-          stream: db
-              .doc('/Company/kGCOpHgRyiIYLr4Fwuys/User/CAloQhHUUqQK3ZGR8vjcl6FGQuA3')
-              .snapshots(),
-          builder: (BuildContext context,
-              AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot) {
-            if (snapshot.hasError) {
-              return ErrorWidget(snapshot.error.toString());
-            }
-            if (!snapshot.hasData) {
-              return const CircularProgressIndicator();
-            }
+      home: /*ScanPage(db)*/GroupPage(),
+    );
+  }
 
-            final doc = snapshot.data!;
+  Scaffold ScanPage(FirebaseFirestore db) {
+    return Scaffold(
+      body: Center(
+          child: StreamBuilder(
+        stream: db
+            .doc('/Company/kGCOpHgRyiIYLr4Fwuys/User/CAloQhHUUqQK3ZGR8vjcl6FGQuA3')
+            .snapshots(),
+        builder: (BuildContext context,
+            AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot) {
+          if (snapshot.hasError) {
+            return ErrorWidget(snapshot.error.toString());
+          }
+          if (!snapshot.hasData) {
+            return const CircularProgressIndicator();
+          }
 
-            return Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  doc['name'],
-                  style: const TextStyle(fontSize: 32),
-                ),
-                ElevatedButton.icon(
-                  onPressed: () {
-                    updateAtWork();
-                  },
-                  icon: Icon(Icons.start),
-                  label: Text("Start"),
-                ),
-                doc['atWork'] ? Text('true') : Text('false')
-              ],
-            );
-          },
-        )),
-      ),
+          final doc = snapshot.data!;
+
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                doc['name'],
+                style: const TextStyle(fontSize: 32),
+              ),
+              ElevatedButton.icon(
+                onPressed: () {
+                  updateAtWork();
+                },
+                icon: Icon(Icons.start),
+                label: Text("Start"),
+              ),
+              doc['atWork'] ? Text('true') : Text('false')
+            ],
+          );
+        },
+      )),
     );
   }
 }
