@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutterfire_ui/auth.dart';
 import 'package:timeitapp/firebase_options.dart';
-import 'package:timeitapp/screens/chat.dart';
+import 'package:timeitapp/screens/chat_screen.dart';
+import 'package:timeitapp/screens/scan_screen.dart';
 import 'package:timeitapp/widgets/auth_gate.dart';
 
 void main() async {
@@ -25,7 +27,64 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  bool atWork = false;
+  int _selectedIndex = 0;
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
+  // This widget is the root of your application.
+  @override
+  Widget build(BuildContext context) {
+    final db = FirebaseFirestore.instance;
+    final List<Widget> _pages = <Widget>[
+      ScanScreen(),
+      ChatScreen(),
+      ProfileScreen(),
+    ];
+
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text("Page Title"),
+        ),
+        body: Center(child: _pages.elementAt(_selectedIndex)),
+        bottomNavigationBar: BottomNavigationBar(
+          items: const [
+            BottomNavigationBarItem(icon: Icon(Icons.camera), label: 'Scan'),
+            BottomNavigationBarItem(icon: Icon(Icons.chat), label: 'Chat'),
+            BottomNavigationBarItem(icon: Icon(Icons.person), label: 'User'),
+          ],
+          currentIndex: _selectedIndex,
+          onTap: _onItemTapped,
+        ),
+      ),
+    );
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*bool atWork = false;
   final db = FirebaseFirestore.instance;
   final userPath = '/Company/kGCOpHgRyiIYLr4Fwuys/User/CAloQhHUUqQK3ZGR8vjcl6FGQuA3';
   Future<void> updateAtWork() async {
@@ -37,16 +96,8 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    final db = FirebaseFirestore.instance;
-    return MaterialApp(
-      home: /*ScanPage(db)*/GroupPage(),
-    );
-  }
 
-  Scaffold ScanPage(FirebaseFirestore db) {
+Scaffold ScanPage(FirebaseFirestore db) {
     return Scaffold(
       body: Center(
           child: StreamBuilder(
@@ -85,5 +136,4 @@ class _MyAppState extends State<MyApp> {
         },
       )),
     );
-  }
-}
+  }*/
