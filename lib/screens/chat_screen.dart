@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:timeitapp/widgets/db.dart' as db;
 import 'package:timeitapp/model/message.dart';
@@ -30,7 +31,8 @@ class ChatScreen extends StatelessWidget {
           return Stack(
             children: [
               LayoutBuilder(builder: (context, BoxConstraints constraints) {
-                return Image.asset('assets/back2.png', fit: BoxFit.cover, width: constraints.maxWidth);
+                return Image.asset('assets/back2.png',
+                    fit: BoxFit.cover, width: constraints.maxWidth);
               }),
               Column(
                 children: [
@@ -38,6 +40,9 @@ class ChatScreen extends StatelessWidget {
                     child: MessageList(messages: snapshot.data!),
                   ),
                   MessageBox(onSend: (text) {
+                    final User = FirebaseAuth.instance.currentUser!
+                        .uid; // CON ESTO DE AQUI TENEMOS LA AUTENTIFICACION DEL USUARIO QUE HA ESCRITO EL MENSAJE, A PARTIR DE AHI, PODREMOS SABER SI HA ESCRITO EL O NO LAS COSAS
+                    print(User);
                     db.sendMessage(Message(text));
                   }),
                 ],
