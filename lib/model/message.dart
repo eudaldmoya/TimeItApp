@@ -19,6 +19,9 @@ class Message {
         id =
             'id'; //NO ENTIENDO PORQUE NECESITA EL ID SI LUEGO PONE LO QUE EL QUIERE EN EL FIRESTORE
 
+
+  String get hhmm => '${datetime.hour.toString().padLeft(2,'0')}:${datetime.minute.toString().padLeft(2,'0')}';
+
 }
 
 List<Message> toMessageList(QuerySnapshot query) {

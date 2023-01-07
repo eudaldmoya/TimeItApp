@@ -27,15 +27,21 @@ class ChatScreen extends StatelessWidget {
           }
 
           // final docs = qsnap.docs;
-          return Column(
+          return Stack(
             children: [
-              Expanded(
-                child: MessageList(messages: snapshot.data!),
-              ),
-              MessageBox(onSend: (text){
-              
-                db.sendMessage( Message(text));
+              LayoutBuilder(builder: (context, BoxConstraints constraints) {
+                return Image.asset('assets/back2.png', fit: BoxFit.cover, width: constraints.maxWidth);
               }),
+              Column(
+                children: [
+                  Expanded(
+                    child: MessageList(messages: snapshot.data!),
+                  ),
+                  MessageBox(onSend: (text) {
+                    db.sendMessage(Message(text));
+                  }),
+                ],
+              ),
             ],
           );
         },
