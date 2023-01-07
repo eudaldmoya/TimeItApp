@@ -3,7 +3,16 @@ import 'package:timeitapp/model/message.dart';
 
 Stream<List<Message>> getGroupMessages() {
   return FirebaseFirestore.instance
-      .collection('/Company/kGCOpHgRyiIYLr4Fwuys/Chat/qkKJ8H4tgmldDRJInX4T/messages')
+      .collection(
+          '/Company/kGCOpHgRyiIYLr4Fwuys/Chat/qkKJ8H4tgmldDRJInX4T/messages')
+      .orderBy('datetime', descending: true)
       .snapshots()
       .map(toMessageList);
+}
+
+Future<void> sendMessage(Message msg) async {
+  await FirebaseFirestore.instance
+      .collection(
+          '/Company/kGCOpHgRyiIYLr4Fwuys/Chat/qkKJ8H4tgmldDRJInX4T/messages')
+      .add(msg.toFirestore());
 }

@@ -33,7 +33,8 @@ class ChatScreen extends StatelessWidget {
                 child: MessageList(messages: snapshot.data!),
               ),
               MessageBox(onSend: (text){
-                print(text);
+              
+                db.sendMessage( Message(text));
               }),
             ],
           );
