@@ -1,30 +1,25 @@
-
 import 'package:flutter/material.dart';
 
 class MessageBox extends StatefulWidget {
   final Function onSend;
- MessageBox({required this.onSend});
+  MessageBox({required this.onSend});
 
-  
   @override
   State<MessageBox> createState() => _MessageBoxState();
 }
 
 class _MessageBoxState extends State<MessageBox> {
- final TextEditingController controllermen = TextEditingController();
+  final TextEditingController controllermen = TextEditingController();
 
+  void dispose() {
+    controllermen.dispose();
+    super.dispose();
+  }
 
-
-void dispose(){
-  controllermen.dispose();
-  super.dispose();
-}
-
-_send(String text){
-  widget.onSend(text);
-  controllermen.clear();
-}
-
+  _send(String text) {
+    widget.onSend(text);
+    controllermen.clear();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,15 +28,38 @@ _send(String text){
       child: Row(
         children: [
           Expanded(
-            child: TextField(
-              controller : controllermen,
-              onSubmitted: _send),
+            child: Material(
+              //El material es el que crea el cuadro blanco de base
+              elevation: 2, //crea una sombra debajo del texto
+              shape:
+                  StadiumBorder(), //coge la forme de ovulo, la sombra se adapta a este
+              child: Padding(
+                padding: const EdgeInsets.only(
+                    left: 16,
+                    right:
+                        16), //Añadimos espacios a los lados para que el texto no esté tan pegado
+                child: TextField(
+                  controller: controllermen,
+                  onSubmitted: _send,
+                  decoration: InputDecoration(
+                      border: InputBorder
+                          .none), //Se va la ralla que tiene de serie el textfield
+                ),
+              ),
+            ),
           ),
-          IconButton(
-            icon: Icon(Icons.send),
-            onPressed: () =>
-             _send(controllermen.text),
-          
+          SizedBox(
+            width: 8,
+          ),
+          Material(
+            color: Theme.of(context)
+                .primaryColor, //SE PONE EL COLOR DEL TEMA QUE HAY PREDEFINIDO EN LA APLICACION, POR ESO SALE EN AZUL
+            shape: CircleBorder(),
+            child: IconButton(
+              icon: Icon(Icons.send),
+              onPressed: () => _send(controllermen.text),
+              color : Colors.white,
+            ),
           )
         ],
       ),

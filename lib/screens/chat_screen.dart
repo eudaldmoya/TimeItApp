@@ -13,6 +13,7 @@ class ChatScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text("Firebase WhatsApp")),
+      backgroundColor: Color.fromARGB(255, 250, 209, 223),
       body: StreamBuilder(
         stream: db.getGroupMessages(),
         builder: (BuildContext context, AsyncSnapshot<List<Message>> snapshot) {
