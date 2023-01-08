@@ -6,6 +6,8 @@ import 'package:timeitapp/firebase_options.dart';
 import 'package:timeitapp/screens/chat_screen.dart';
 import 'package:timeitapp/screens/scan_screen.dart';
 import 'package:timeitapp/widgets/auth_gate.dart';
+import 'package:get/get.dart';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
