@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterfire_ui/auth.dart';
+import 'package:timeitapp/screens/newlogin_screen.dart';
 
 class AuthGate extends StatelessWidget {
   final Widget app;
@@ -13,11 +14,12 @@ class AuthGate extends StatelessWidget {
       builder: (BuildContext context, AsyncSnapshot<User?> snapshot) {
         if (!snapshot.hasData) {
           return MaterialApp(
-            home: SignInScreen(
-              providerConfigs: [
-                EmailProviderConfiguration(),
-              ],
-            ),
+            home: LoginPage()
+            // SignInScreen(
+            //   providerConfigs: [
+            //     EmailProviderConfiguration(),
+            //   ],
+            // ),
           );
         }
         return app;
