@@ -43,7 +43,8 @@ class ChatScreen extends StatelessWidget {
                     final User = FirebaseAuth.instance.currentUser!
                         .uid; // CON ESTO DE AQUI TENEMOS LA AUTENTIFICACION DEL USUARIO QUE HA ESCRITO EL MENSAJE, A PARTIR DE AHI, PODREMOS SABER SI HA ESCRITO EL O NO LAS COSAS
                     print(User);
-                    db.sendMessage(Message(text));
+                    final message = Message(text, User);
+                    db.sendMessage(message);
                   }),
                 ],
               ),
