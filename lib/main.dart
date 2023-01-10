@@ -42,7 +42,8 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     final db = FirebaseFirestore.instance;
     final List<Widget> _pages = <Widget>[
-      ScanScreen(),
+      
+      Scan_Screen(),
       ChatScreen(),
       ProfileScreen(),
     ];

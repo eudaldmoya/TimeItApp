@@ -25,7 +25,7 @@ class AuthController extends GetxController {
       print("login page");
       Get.offAll(() => LoginPage());
     } else {
-      Get.offAll(ScanScreen());
+      // Get.offAll(ScanScreen());
     }
   }
 
