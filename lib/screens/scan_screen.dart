@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
@@ -153,21 +154,98 @@ class Scan_Screen extends StatefulWidget {
 }
 
 class _Scan_ScreenState extends State<Scan_Screen> {
+  bool atWork = false;
+
+  final dbb = FirebaseFirestore.instance;
+  final userPath =
+      '/Company/kGCOpHgRyiIYLr4Fwuys/User/${FirebaseAuth.instance.currentUser!.uid}';
+  Future<void> updateAtWork() async {
+    await dbb.doc(userPath).update({
+      'atWork': atWork,
+    });
+    setState(() {
+      atWork = !atWork;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Mobile Scanner')),
-      body: MobileScanner(
-          allowDuplicates: false,
-          onDetect: (barcode, args) {
-            if (barcode.rawValue == null) {
-              debugPrint('Failed to scan Barcode');
-            } else {
-              final String code = barcode.rawValue!;
-              debugPrint('Barcode found! $code');
-            }
-          }),
+    final db = FirebaseFirestore.instance;
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(title: const Text('Mobile Scanner')),
+        body: Center(
+          child: StreamBuilder(
+            stream: db.doc('/Company/kGCOpHgRyiIYLr4Fwuys').snapshots(),
+            builder: (BuildContext context,
+                AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>>
+                    snapshot) {
+              if (snapshot.hasError) {
+                return ErrorWidget(snapshot.error.toString());
+              }
+              if (!snapshot.hasData) {
+                return const CircularProgressIndicator();
+              }
+
+              final doc = snapshot.data!;
+
+              return Column(
+                children: [
+                  Expanded(
+                    child: MobileScanner(
+                        allowDuplicates: false,
+                        onDetect: (barcode, args) {
+                          if (barcode.rawValue == null) {
+                            debugPrint('Failed to scan Barcode');
+                          } else {
+                            final String code = barcode.rawValue!;
+                            if (doc['qrId'] == code) {
+                              debugPrint('Barcode found! $code');
+                              atWork = !atWork;
+                              dbb.doc(userPath).update({
+                                'atWork': atWork,
+                              });
+                            } else {
+                              print("NO ES EL CORRECTO BRO");
+                            }
+                          }
+                        }),
+                  ),
+                  StreamBuilder(
+                    stream: FirebaseFirestore.instance
+                        .doc(
+                            '/Company/kGCOpHgRyiIYLr4Fwuys/User/${FirebaseAuth.instance.currentUser!.uid}')
+                        .snapshots(),
+                    builder: (BuildContext context,
+                        AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>>
+                            snapshot) {
+                      if (snapshot.hasError) {
+                        return ErrorWidget(snapshot.error.toString());
+                      }
+                      if (!snapshot.hasData) {
+                        return const CircularProgressIndicator();
+                      }
+
+                      final doca = snapshot.data!;
+
+                      return Column(
+                        children: [
+                          Text('Hola ${doca['name']}'),
+                          Container(
+                            child: atWork
+                                ? Text("Estás trabajando")
+                                : Text("No estás trabajando"),
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                ],
+              );
+            },
+          ),
+        ),
+      ),
     );
   }
 }
-
