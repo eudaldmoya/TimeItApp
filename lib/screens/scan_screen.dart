@@ -3,6 +3,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:timeitapp/model/group_days.dart';
+import 'package:timeitapp/widgets/db.dart' as work;
+import 'package:timeitapp/widgets/work_day.dart';
 
 // class ScanScreen extends StatefulWidget {
 //   const ScanScreen({super.key});
@@ -211,34 +214,37 @@ class _Scan_ScreenState extends State<Scan_Screen> {
                           }
                         }),
                   ),
-                  StreamBuilder(
-                    stream: FirebaseFirestore.instance
-                        .doc(
-                            '/Company/kGCOpHgRyiIYLr4Fwuys/User/${FirebaseAuth.instance.currentUser!.uid}')
-                        .snapshots(),
-                    builder: (BuildContext context,
-                        AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>>
-                            snapshot) {
-                      if (snapshot.hasError) {
-                        return ErrorWidget(snapshot.error.toString());
-                      }
-                      if (!snapshot.hasData) {
-                        return const CircularProgressIndicator();
-                      }
-
-                      final doca = snapshot.data!;
-
-                      return Column(
-                        children: [
-                          Text('Hola ${doca['name']}'),
-                          Container(
-                            child: atWork
-                                ? Text("Estás trabajando")
-                                : Text("No estás trabajando"),
-                          ),
-                        ],
-                      );
-                    },
+                  Expanded(
+                    child: StreamBuilder(
+                      stream: FirebaseFirestore.instance
+                          .doc(
+                              '/Company/kGCOpHgRyiIYLr4Fwuys/User/${FirebaseAuth.instance.currentUser!.uid}')
+                          .snapshots(),
+                      builder: (BuildContext context,
+                          AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>>
+                              snapshot) {
+                        if (snapshot.hasError) {
+                          return ErrorWidget(snapshot.error.toString());
+                        }
+                        if (!snapshot.hasData) {
+                          return const CircularProgressIndicator();
+                        }
+                  
+                        final doca = snapshot.data!;
+                  
+                        return Column(
+                          children: [
+                            Text('Hola ${doca['name']}'),
+                            Container(
+                              child: atWork
+                                  ? Text("Estás trabajando")
+                                  : Text("No estás trabajando"),
+                            ),
+                            GroupJornada(),
+                          ],
+                        );
+                      },
+                    ),
                   ),
                 ],
               );
@@ -248,4 +254,6 @@ class _Scan_ScreenState extends State<Scan_Screen> {
       ),
     );
   }
+
+ 
 }
