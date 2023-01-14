@@ -1,11 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
-class ColeccionJornadas {
+class UserWork {
   String id;
   DateTime workingDate;
 
-  ColeccionJornadas.fromFirestore(DocumentSnapshot doc)
-      : id = doc.id,
+  UserWork.fromFirestore(DocumentSnapshot doc)
+      : id = FirebaseAuth.instance.currentUser!.toString(),
        
         workingDate = (doc['workingDate'] as Timestamp).toDate();
         
@@ -16,7 +17,7 @@ class ColeccionJornadas {
         
       };
 
-  ColeccionJornadas()
+  UserWork()
       : workingDate = DateTime.now(),
         id =
             'id'; //NO ENTIENDO PORQUE NECESITA EL ID SI LUEGO PONE LO QUE EL QUIERE EN EL FIRESTORE
@@ -28,6 +29,6 @@ class ColeccionJornadas {
 }
 
 
-List<ColeccionJornadas> toColeccionJornadasList(QuerySnapshot query) {
-  return query.docs.map((doc) => ColeccionJornadas.fromFirestore(doc)).toList();
+List<UserWork> toUserWorkList(QuerySnapshot query) {
+  return query.docs.map((doc) => UserWork.fromFirestore(doc)).toList();
 }

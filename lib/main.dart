@@ -50,9 +50,7 @@ class _MyAppState extends State<MyApp> {
 
     return MaterialApp(
       home: Scaffold(
-        appBar: AppBar(
-          title: Text("Page Title"),
-        ),
+        
         body: Center(child: _pages.elementAt(_selectedIndex)),
         bottomNavigationBar: BottomNavigationBar(
           items: const [

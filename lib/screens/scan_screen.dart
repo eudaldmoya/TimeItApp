@@ -205,16 +205,19 @@ class _Scan_ScreenState extends State<Scan_Screen> {
                             if (doc['qrId'] == code) {
                               debugPrint('Barcode found! $code');
                               atWork = !atWork;
+                               //GroupJornada();
                               dbb.doc(userPath).update({
                                 'atWork': atWork,
                               });
+
                             } else {
                               print("NO ES EL CORRECTO BRO");
                             }
                           }
                         }),
                   ),
-                  Expanded(
+                  Container(
+                    height: MediaQuery.of(context).size.height * 0.2,
                     child: StreamBuilder(
                       stream: FirebaseFirestore.instance
                           .doc(
@@ -229,9 +232,9 @@ class _Scan_ScreenState extends State<Scan_Screen> {
                         if (!snapshot.hasData) {
                           return const CircularProgressIndicator();
                         }
-                  
+
                         final doca = snapshot.data!;
-                  
+
                         return Column(
                           children: [
                             Text('Hola ${doca['name']}'),
@@ -240,7 +243,9 @@ class _Scan_ScreenState extends State<Scan_Screen> {
                                   ? Text("Estás trabajando")
                                   : Text("No estás trabajando"),
                             ),
-                            GroupJornada(),
+                            Expanded(
+                                
+                               child: GroupJornada()),
                           ],
                         );
                       },
@@ -254,6 +259,4 @@ class _Scan_ScreenState extends State<Scan_Screen> {
       ),
     );
   }
-
- 
 }

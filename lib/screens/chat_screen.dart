@@ -26,7 +26,8 @@ class ChatScreen extends StatelessWidget {
               child: CircularProgressIndicator(),
             );
           }
-
+          
+          print('EN TOTAL HAY MENSAJES ${snapshot.data!.length}');
           // final docs = qsnap.docs;
           return Stack(
             children: [
