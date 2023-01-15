@@ -1,29 +1,32 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Jornada {
-  String id, userId;
-  DateTime datetime;
+  String id;
+  DateTime  startTime;
+  bool finished;
 
   Jornada.fromFirestore(DocumentSnapshot doc)
       : id = doc.id,
-       
-        datetime = (doc['datetime'] as Timestamp).toDate(),
-        userId = doc['userId'];
+       finished = false,
+        //finishTime = (doc['datetime'] as Timestamp).toDate(),
+         startTime = (doc['datetime'] as Timestamp).toDate();
 
   Map<String, dynamic> toFirestore() => {
-        
-        'datetime': datetime,
-        'userId' : userId,
+        'finished' : finished,
+       // 'finishTime': finishTime,
+        'startTime': startTime,
       };
 
-  Jornada( this.userId)
-      : datetime = DateTime.now(),
+  Jornada()
+      : //finishTime = DateTime.now(),
+        startTime = DateTime.now(),
+        finished = false,
         id =
             'id'; //NO ENTIENDO PORQUE NECESITA EL ID SI LUEGO PONE LO QUE EL QUIERE EN EL FIRESTORE
             
 
 
-  String get hhmm => '${datetime.hour.toString().padLeft(2,'0')}:${datetime.minute.toString().padLeft(2,'0')}';
+  String get hhmm => '${startTime.hour.toString().padLeft(2,'0')}:${startTime.minute.toString().padLeft(2,'0')}';
 
 }
 

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -158,6 +160,7 @@ class Scan_Screen extends StatefulWidget {
 
 class _Scan_ScreenState extends State<Scan_Screen> {
   bool atWork = false;
+  bool iniciar = false;
 
   final dbb = FirebaseFirestore.instance;
   final userPath =
@@ -168,12 +171,45 @@ class _Scan_ScreenState extends State<Scan_Screen> {
     });
     setState(() {
       atWork = !atWork;
+      
     });
   }
+
+  void llamar() {
+    GroupJornada(atWork);
+  }
+
+  Timer? timer;
+
+  @override
+  void initState() {
+    super.initState();
+    timer = Timer.periodic(
+        Duration(seconds: 10), (Timer t) => checkForNewSharedLists());
+  }
+
+  @override
+  void dispose() {
+    timer?.cancel();
+    super.dispose();
+  }
+
+ void checkForNewSharedLists() {
+    // do request here
+
+    setState(() {
+      iniciar = false;
+      
+      // change state according to result of request
+    });
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
     final db = FirebaseFirestore.instance;
+    final puede = false;
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(title: const Text('Mobile Scanner')),
@@ -205,11 +241,12 @@ class _Scan_ScreenState extends State<Scan_Screen> {
                             if (doc['qrId'] == code) {
                               debugPrint('Barcode found! $code');
                               atWork = !atWork;
-                               //GroupJornada();
+                              iniciar = true;
                               dbb.doc(userPath).update({
                                 'atWork': atWork,
                               });
 
+                              return ColeccionJornadas();
                             } else {
                               print("NO ES EL CORRECTO BRO");
                             }
@@ -244,8 +281,9 @@ class _Scan_ScreenState extends State<Scan_Screen> {
                                   : Text("No estás trabajando"),
                             ),
                             Expanded(
-                                
-                               child: GroupJornada()),
+                              child:
+                                  iniciar ? GroupJornada(atWork) : Text("datatatata"),
+                            ),
                           ],
                         );
                       },
