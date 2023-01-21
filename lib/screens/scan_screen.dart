@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:timeitapp/model/group_days.dart';
+import 'package:timeitapp/widgets/contar_dias.dart';
 import 'package:timeitapp/widgets/db.dart' as work;
 import 'package:timeitapp/widgets/work_day.dart';
 
@@ -176,7 +177,7 @@ class _Scan_ScreenState extends State<Scan_Screen> {
   }
 
   void llamar() {
-    GroupJornada(atWork);
+    GroupJornada();
   }
 
   Timer? timer;
@@ -185,7 +186,7 @@ class _Scan_ScreenState extends State<Scan_Screen> {
   void initState() {
     super.initState();
     timer = Timer.periodic(
-        Duration(seconds: 10), (Timer t) => checkForNewSharedLists());
+        Duration(seconds: 2), (Timer t) => checkForNewSharedLists());
   }
 
   @override
@@ -245,8 +246,8 @@ class _Scan_ScreenState extends State<Scan_Screen> {
                               dbb.doc(userPath).update({
                                 'atWork': atWork,
                               });
-
-                              return ColeccionJornadas();
+                              
+                              return ContarDias();
                             } else {
                               print("NO ES EL CORRECTO BRO");
                             }
@@ -282,7 +283,7 @@ class _Scan_ScreenState extends State<Scan_Screen> {
                             ),
                             Expanded(
                               child:
-                                  iniciar ? GroupJornada(atWork) : Text("datatatata"),
+                                    iniciar ? ContarDias() : Text("data"),
                             ),
                           ],
                         );
