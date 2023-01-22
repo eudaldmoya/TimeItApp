@@ -12,8 +12,19 @@ import 'package:timeitapp/widgets/db.dart' as work;
 import 'package:timeitapp/widgets/void_add_day.dart';
 
 class ContarDias extends StatelessWidget {
+  final bool atWork;
+  ContarDias({
+    Key? key,
+    required this.atWork,
+  });
+  int jornadaIniciada = 1;
   int aciertos = 0;
+  bool jornadacreada = false;
+  int jornadaAcabada = 1;
   int comprobacion = 0;
+  int contador = 0;
+  int creado = 0;
+
   String iddocumento = '';
   void cacadevaca() {}
   @override
@@ -39,6 +50,7 @@ class ContarDias extends StatelessWidget {
             print('DIA ${conjuntoJornadas[i].ddmmyy}');
             if (conjuntoJornadas[i].ddmmyy == dateStr) {
               aciertos = 1;
+              comprobacion = 1;
 
               //  print("tiene la misma fecha");
 
@@ -54,42 +66,110 @@ class ContarDias extends StatelessWidget {
                 '/Company/kGCOpHgRyiIYLr4Fwuys/WorkingDays/';
             work.sendWorkDay(fecha);
             aciertos = 1;
-            comprobacion = 1;
+            creado = 1;
             iddocumento = fecha.id;
             print('IDDELDOCUMENTO $iddocumento');
           }
 
           for (int j = 0; j < conjuntoJornadas.length; j++) {
-            if ((comprobacion == 1) &&
-                (conjuntoJornadas[j].ddmmyy == dateStr)) {
-              print(
-                  'DENTRO EL ID QUE TIENE DENTRO ES ${conjuntoJornadas[j].id}');
-              final objeto = WorkersWorking();
-              final String iddocumento = conjuntoJornadas[j].id;
-              work.crearWorkerColeccion(objeto, iddocumento);
-              int lookToUser =
-                  0; //SI ESTO ES 1 QUIERE DECIR QUE HAY UN DOCUMENTO CON EL USUARIO, SI ES 0 QUIERE DECIR QUE NO HAY UNO Y POR LO CUAL, SE TIENE QUE CREAR UNO
+            if (conjuntoJornadas[j].ddmmyy == dateStr) {
+              if ((comprobacion == 1) || (creado == 1)) {
+                print(
+                    'DENTRO EL ID QUE TIENE DENTRO ES ${conjuntoJornadas[j].id}');
+                final objeto = WorkersWorking();
+                final String iddocumento = conjuntoJornadas[j].id;
+                work.crearWorkerColeccion(objeto, iddocumento);
+                int lookToUser =
+                    0; //SI ESTO ES 1 QUIERE DECIR QUE HAY UN DOCUMENTO CON EL USUARIO, SI ES 0 QUIERE DECIR QUE NO HAY UNO Y POR LO CUAL, SE TIENE QUE CREAR UNO
 
-              // return Text("data");
-              /////////ESTO ES PARA AÑADIR EN CADA DOCUMENTO UN DOCUMENTO CON EL ID DEL USUARIO
-              print('CONJUNTO DE JORNADAS ID ${conjuntoJornadas[j].id}');
-              // return Text("caca");
-              final dbUser = FirebaseFirestore.instance;
+                // return Text("data");
+                /////////ESTO ES PARA AÑADIR EN CADA DOCUMENTO UN DOCUMENTO CON EL ID DEL USUARIO
+                print('CONJUNTO DE JORNADAS ID ${conjuntoJornadas[j].id}');
+                // return Text("caca");
+                final dbUser = FirebaseFirestore.instance;
 
-              int jornadaIniciada = 1;
+                return StreamBuilder(
+                    stream: work.GetJornadas(conjuntoJornadas[j].id),
+                    builder: (BuildContext context,
+                        AsyncSnapshot<List<Jornada>> snapshot) {
+                      if (snapshot.hasError) {
+                        print("ERROR ${conjuntoJornadas[j].id}");
+                        return ErrorWidget(snapshot.error.toString());
+                      }
+                      if (!snapshot.hasData) {
+                        return const CircularProgressIndicator();
+                      }
+                      List<Jornada> jornadasusuario = snapshot.data!;
+                      //QUIERO QUE CUANDO SE HAGA UNA JORNADA SE GASTE,
+                      //LA CONDICION SERA QUE ESTE VALOR TIENE QUE SER 1, DE ESTA FORMA NO
+                      //ENTRARA EN BUCLE
 
-              if (jornadaIniciada == 1) {
-                print('LA JORNADA ESTA EN ${jornadaIniciada}');
-                jornadaIniciada = 0;
-                final JornadaUser = Jornada();
-                work.sendJordadaUser(JornadaUser, conjuntoJornadas[j].id);
+                      // if (jornadaIniciada == 1) {
+                      //   for (int k = 0; k < jornadasusuario.length; j++) {
+                      //     if (!jornadasusuario[k].finished) {
+                      //       work.finishedJornada(
+                      //           conjuntoJornadas[j].id, jornadasusuario[k].id);
+
+                      //           jornadacerrada = true;
+                      //     }
+
+                      //   }
+
+                      //   if(jornadacerrada =)
+
+                      print(
+                          'ESTA TRABAJANDO NUMERO DE JORNADAS $atWork ${jornadasusuario.length}');
+                      if (!atWork) {
+                        for (int h = 0; h < 1; h++) {
+                          if (jornadasusuario[h].finished == false) {
+                            print(
+                                "ESTA TRABAJDNO MENTIRA ${jornadasusuario[h].id}");
+                            work.finishedJornada(
+                                conjuntoJornadas[j].id, jornadasusuario[h].id);
+                          }
+
+                          jornadacreada = false;
+                        }
+                        contador--;
+                      }
+
+
+                      print('ESTADO DEL TRABAJO $atWork');
+                      if(atWork){
+                      if (jornadaIniciada == 1) {
+                        print(
+                            'ESTA TRABAJANDO $atWork y la jornada $jornadaIniciada');
+                        print('LA JORNADA ESTA EN ${jornadaIniciada}');
+                        jornadaIniciada = 0;
+                        final JornadaUser = Jornada();
+                        work.sendJordadaUser(
+                            JornadaUser, conjuntoJornadas[j].id);
+                            contador++;
+                      }
+                      }
+
+                      // if (jornadasusuario.length == 0) {
+                      //     final JornadaUser = Jornada();
+                      //     work.sendJordadaUser(
+                      //         JornadaUser, conjuntoJornadas[index].id);
+                      //   }
+                      //   int jornadascompletas = 0; //ESTO SERVIRÁ PARA VER SI HA ACABADO O NO TODAS LAS JORNADAS
+                      //   for (int j = 0; j < jornadasusuario.length; j++) {
+                      //     //COMPROBAR SI HAN ACABADO O NO LAS JORNADAS
+                      //       if(jornadasusuario[j].finished){
+
+                      //       }
+                      //   }
+
+                      return Text("data");
+
+                      //SE TIENE QUE COMPROBAR SI ES DE OTRO USUARIO O NO PARA PONER LA JORNADA
+                      //EN EL DOC ESTA LA PARTE DE LOOKTOUSER PARA COMPROBARLO
+                      //AHORA MISMO CREA LA JORNADA, LO TIENE QUE HACER CUANDO LO ESCANEA, Y CUANDO VUELVA A ESCANEAR, CUANDO EL ITWORK SEA FALSE, QUE HAGA LO OTRO
+                    });
               }
-              //SE TIENE QUE COMPROBAR SI ES DE OTRO USUARIO O NO PARA PONER LA JORNADA
-              //AHORA MISMO CREA LA JORNADA, LO TIENE QUE HACER CUANDO LO ESCANEA, Y CUANDO VUELVA A ESCANEAR, CUANDO EL ITWORK SEA FALSE, QUE HAGA LO OTRO
-              //EN EL DOC ESTA LA PARTE DE LOOKTOUSER PARA COMPROBARLO
             }
           }
-
           return Text("data");
         });
   }

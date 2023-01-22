@@ -1,5 +1,5 @@
 import 'dart:async';
-
+import 'package:timeitapp/model/globals.dart' as globals;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -172,7 +172,6 @@ class _Scan_ScreenState extends State<Scan_Screen> {
     });
     setState(() {
       atWork = !atWork;
-      
     });
   }
 
@@ -186,7 +185,7 @@ class _Scan_ScreenState extends State<Scan_Screen> {
   void initState() {
     super.initState();
     timer = Timer.periodic(
-        Duration(seconds: 2), (Timer t) => checkForNewSharedLists());
+        Duration(seconds: 5), (Timer t) => checkForNewSharedLists());
   }
 
   @override
@@ -195,17 +194,16 @@ class _Scan_ScreenState extends State<Scan_Screen> {
     super.dispose();
   }
 
- void checkForNewSharedLists() {
+  void checkForNewSharedLists() {
     // do request here
 
-    setState(() {
-      iniciar = false;
-      
-      // change state according to result of request
-    });
+    globals.connected = false;
+    // setState(() {
+    //   iniciar = false;
+
+    //   // change state according to result of request
+    // });
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -240,14 +238,16 @@ class _Scan_ScreenState extends State<Scan_Screen> {
                           } else {
                             final String code = barcode.rawValue!;
                             if (doc['qrId'] == code) {
-                              debugPrint('Barcode found! $code');
+                              globals.can = true;
+                              // debugPrint('Barcode found! $code');
                               atWork = !atWork;
                               iniciar = true;
                               dbb.doc(userPath).update({
                                 'atWork': atWork,
                               });
+
+                              // ContarDias(atWork: atWork,);
                               
-                              return ContarDias();
                             } else {
                               print("NO ES EL CORRECTO BRO");
                             }
@@ -278,13 +278,27 @@ class _Scan_ScreenState extends State<Scan_Screen> {
                             Text('Hola ${doca['name']}'),
                             Container(
                               child: atWork
-                                  ? Text("Estás trabajando")
-                                  : Text("No estás trabajando"),
+                                  ? Text("Trabajando")
+                                  : Text("No trabajando"),
                             ),
                             Expanded(
-                              child:
-                                    iniciar ? ContarDias() : Text("data"),
+                              child: globals.connected
+                                  ? ContarDias(atWork: atWork)
+                                  : Text(
+                                      "dataaa"), //HACER UN PROVIDER, DESDE ESTE WIDGET SE MODIFICARÁ, DESDE EL DE ABAJO TAMBIEN, PARA ASI PODERLO IR RETOCANDO DESDE LOS DOS LADOS
+                              // iniciar ? ContarDias(atWork: atWork,) : Text("data"),
                             ),
+                            ElevatedButton(
+                              onPressed: globals.can
+                                  ? () {
+                                      globals.connected = true;
+                                      globals.can = false;
+                                      print("ESTA TRABAJ");
+                                    }
+                                  : null,
+                              child: Text("Click para confirmar"),
+                              
+                            )
                           ],
                         );
                       },
@@ -296,6 +310,25 @@ class _Scan_ScreenState extends State<Scan_Screen> {
           ),
         ),
       ),
+    );
+  }
+}
+
+class MyStatelessWidget extends StatelessWidget {
+  const MyStatelessWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: globals.can
+          ? () {
+              globals.connected = true;
+              globals.can = false;
+
+              ContarDias;
+            }
+          : null,
+      child: Text("Click para confirmar"),
     );
   }
 }

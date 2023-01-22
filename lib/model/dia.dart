@@ -9,7 +9,7 @@ class Jornada {
       : id = doc.id,
        finished = false,
         //finishTime = (doc['datetime'] as Timestamp).toDate(),
-         startTime = (doc['datetime'] as Timestamp).toDate();
+         startTime = (doc['startTime'] as Timestamp).toDate();
 
   Map<String, dynamic> toFirestore() => {
         'finished' : finished,
