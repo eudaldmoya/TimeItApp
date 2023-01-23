@@ -20,6 +20,10 @@ class _MessageBoxState extends State<MessageBox> {
     widget.onSend(text);
     controllermen.clear();
   }
+  void formatNickname(){
+    controllermen.text = controllermen.text.replaceAll(" ", "");
+    print("aqui estoy");
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,8 +61,14 @@ class _MessageBoxState extends State<MessageBox> {
             shape: CircleBorder(),
             child: IconButton(
               icon: Icon(Icons.send),
-              onPressed: () => _send(controllermen.text),
-              color : Colors.white,
+              onPressed: () {
+                  formatNickname();
+
+                if (controllermen.text.isNotEmpty) {
+                  _send(controllermen.text);
+                }
+              },
+              color: Colors.white,
             ),
           )
         ],

@@ -54,6 +54,11 @@ class _MyAppState extends State<MyApp> {
     ];
 
     return MaterialApp(
+      theme: ThemeData(
+        brightness: Brightness.light,
+        primaryColor: Color.fromARGB(255, 57, 67, 156),
+        primarySwatch: Colors.indigo,
+      ),
       home: Scaffold(
         body: Center(child: _pagesWorker.elementAt(_selectedIndex)),
         bottomNavigationBar: BottomNavigationBar(
