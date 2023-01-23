@@ -162,6 +162,7 @@ class Scan_Screen extends StatefulWidget {
 class _Scan_ScreenState extends State<Scan_Screen> {
   bool atWork = false;
   bool iniciar = false;
+  bool confirmacion = false;
 
   final dbb = FirebaseFirestore.instance;
   final userPath =
@@ -211,7 +212,7 @@ class _Scan_ScreenState extends State<Scan_Screen> {
     final puede = false;
     return MaterialApp(
       home: Scaffold(
-        appBar: AppBar(title: const Text('Mobile Scanner')),
+        backgroundColor: Color.fromARGB(255, 207, 207, 242),
         body: Center(
           child: StreamBuilder(
             stream: db.doc('/Company/kGCOpHgRyiIYLr4Fwuys').snapshots(),
@@ -227,81 +228,148 @@ class _Scan_ScreenState extends State<Scan_Screen> {
 
               final doc = snapshot.data!;
 
-              return Column(
+              return Stack(
                 children: [
-                  Expanded(
-                    child: MobileScanner(
-                        allowDuplicates: false,
-                        onDetect: (barcode, args) {
-                          if (barcode.rawValue == null) {
-                            debugPrint('Failed to scan Barcode');
-                          } else {
-                            final String code = barcode.rawValue!;
-                            if (doc['qrId'] == code) {
-                              globals.can = true;
-                              // debugPrint('Barcode found! $code');
-                              atWork = !atWork;
-                              iniciar = true;
-                              dbb.doc(userPath).update({
-                                'atWork': atWork,
-                              });
+                  Column(
+                    children: [
+                      Expanded(
+                        child: MobileScanner(
+                            allowDuplicates: false,
+                            onDetect: (barcode, args) {
+                              if (barcode.rawValue == null) {
+                                debugPrint('Failed to scan Barcode');
+                              } else {
+                                final String code = barcode.rawValue!;
+                                if (doc['qrId'] == code) {
+                                  globals.can = true;
+                                  // debugPrint('Barcode found! $code');
+                                  //atWork = !atWork;
+                                  iniciar = true;
+                                  // dbb.doc(userPath).update({
+                                  //   'atWork': atWork,
+                                  // });
 
-                              // ContarDias(atWork: atWork,);
-                              
-                            } else {
-                              print("NO ES EL CORRECTO BRO");
+                                  // ContarDias(atWork: atWork,);
+
+                                } else {
+                                  print("NO ES EL CORRECTO BRO");
+                                }
+                              }
+                            }),
+                      ),
+                      Container(
+                        height: MediaQuery.of(context).size.height * 0.2,
+                        child: StreamBuilder(
+                          stream: FirebaseFirestore.instance
+                              .doc(
+                                  '/Company/kGCOpHgRyiIYLr4Fwuys/User/${FirebaseAuth.instance.currentUser!.uid}')
+                              .snapshots(),
+                          builder: (BuildContext context,
+                              AsyncSnapshot<
+                                      DocumentSnapshot<Map<String, dynamic>>>
+                                  snapshot) {
+                            if (snapshot.hasError) {
+                              return ErrorWidget(snapshot.error.toString());
                             }
-                          }
-                        }),
+                            if (!snapshot.hasData) {
+                              return const CircularProgressIndicator();
+                            }
+
+                            final doca = snapshot.data!;
+
+                            return Column(
+                              mainAxisSize: MainAxisSize.max,
+                              children: [
+                                SizedBox(
+                                  height: 30,
+                                ),
+                                Container(
+                                  decoration: BoxDecoration(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(20)),
+                                      color:
+                                          Color.fromARGB(255, 178, 178, 233)),
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(
+                                        top: 8, bottom: 8, left: 20, right: 20),
+                                    child: Text(
+                                      'Buenas ${doca['name']}!',
+                                      style: TextStyle(
+                                        color: Color.fromARGB(255, 38, 45, 109),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 10,
+                                ),
+                                Container(
+                                  decoration: BoxDecoration(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(20)),
+                                      color:
+                                          Color.fromARGB(255, 178, 178, 233)),
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(
+                                        top: 8, bottom: 8, left: 20, right: 20),
+                                    child: atWork
+                                        ? Text("Estás trabajando")
+                                        : Text(
+                                            "Ahora mismo no estás trabajando"),
+                                  ),
+                                ),
+                                Expanded(
+                                  child: globals.connected
+                                      ? ContarDias(atWork: atWork)
+                                      : Text(
+                                          ""), //HACER UN PROVIDER, DESDE ESTE WIDGET SE MODIFICARÁ, DESDE EL DE ABAJO TAMBIEN, PARA ASI PODERLO IR RETOCANDO DESDE LOS DOS LADOS
+                                  // iniciar ? ContarDias(atWork: atWork,) : Text("data"),
+                                ),
+                                ElevatedButton(
+                                  onPressed: globals.can
+                                      ? () {
+                                          dbb.doc(userPath).update({
+                                            'atWork': atWork,
+                                          });
+                                          globals.connected = true;
+                                          globals.can = false;
+                                          atWork = !atWork;
+                                          print("ESTA TRABAJ");
+                                          confirmacion = !confirmacion;
+                                        }
+                                      : null,
+                                  child: confirmacion
+                                      ? Text("Confirmar salida")
+                                      : Text("Confirmar entrada"),
+                                )
+                              ],
+                            );
+                          },
+                        ),
+                      ),
+                    ],
                   ),
-                  Container(
-                    height: MediaQuery.of(context).size.height * 0.2,
-                    child: StreamBuilder(
-                      stream: FirebaseFirestore.instance
-                          .doc(
-                              '/Company/kGCOpHgRyiIYLr4Fwuys/User/${FirebaseAuth.instance.currentUser!.uid}')
-                          .snapshots(),
-                      builder: (BuildContext context,
-                          AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>>
-                              snapshot) {
-                        if (snapshot.hasError) {
-                          return ErrorWidget(snapshot.error.toString());
-                        }
-                        if (!snapshot.hasData) {
-                          return const CircularProgressIndicator();
-                        }
-
-                        final doca = snapshot.data!;
-
-                        return Column(
-                          children: [
-                            Text('Hola ${doca['name']}'),
-                            Container(
-                              child: atWork
-                                  ? Text("Trabajando")
-                                  : Text("No trabajando"),
-                            ),
-                            Expanded(
-                              child: globals.connected
-                                  ? ContarDias(atWork: atWork)
-                                  : Text(
-                                      "dataaa"), //HACER UN PROVIDER, DESDE ESTE WIDGET SE MODIFICARÁ, DESDE EL DE ABAJO TAMBIEN, PARA ASI PODERLO IR RETOCANDO DESDE LOS DOS LADOS
-                              // iniciar ? ContarDias(atWork: atWork,) : Text("data"),
-                            ),
-                            ElevatedButton(
-                              onPressed: globals.can
-                                  ? () {
-                                      globals.connected = true;
-                                      globals.can = false;
-                                      print("ESTA TRABAJ");
-                                    }
-                                  : null,
-                              child: Text("Click para confirmar"),
-                              
-                            )
-                          ],
-                        );
-                      },
+                  SafeArea(
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 32),
+                      child: Align(
+                        alignment: Alignment.topCenter,
+                        child: Container(
+                          decoration: BoxDecoration(
+                              color: Color.fromARGB(50, 255, 255, 255)),
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                                top: 8, left: 50, bottom: 8, right: 50),
+                            child: atWork ? Text(
+                              "Escanea el código para salir de trabajar",
+                              style: TextStyle(color: Colors.white),
+                            ) : Text(
+                              "Escanea el código para entrar a trabajar",
+                              style: TextStyle(color: Colors.white),
+                            ) ,
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                 ],

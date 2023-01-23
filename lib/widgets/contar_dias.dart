@@ -161,7 +161,7 @@ class ContarDias extends StatelessWidget {
                       //       }
                       //   }
 
-                      return Text("data");
+                      return Text("");
 
                       //SE TIENE QUE COMPROBAR SI ES DE OTRO USUARIO O NO PARA PONER LA JORNADA
                       //EN EL DOC ESTA LA PARTE DE LOOKTOUSER PARA COMPROBARLO
@@ -170,7 +170,7 @@ class ContarDias extends StatelessWidget {
               }
             }
           }
-          return Text("data");
+          return Text("");
         });
   }
 }
