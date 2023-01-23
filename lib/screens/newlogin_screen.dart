@@ -4,6 +4,7 @@ import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 
 import 'package:get/get.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -28,57 +29,64 @@ class _LoginPageState extends State<LoginPage> {
     double h = MediaQuery.of(context).size.height;
     return Scaffold(
         body: SafeArea(
-      child: SingleChildScrollView(
-        child: Column(
+      child: Stack(children: [
+        LayoutBuilder(builder: (context, BoxConstraints constraints) {
+          return Image.asset('assets/back2.png',
+              fit: BoxFit.cover, width: constraints.maxWidth);
+        }),
+        Column(
           children: [
             Container(
-              width: w,
-              height: h * 0.3,
-              decoration: BoxDecoration(color: Colors.pink),
-            ),
+                width: w,
+                height: h * 0.4,
+                child: Center(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text("Welcome to",
+                          style: GoogleFonts.roboto(fontSize: 40, fontWeight: FontWeight.w100)),
+                      Text("TimeIt!",
+                          style: GoogleFonts.roboto(fontSize: 40, fontWeight: FontWeight.bold, color: Color.fromARGB(255, 47, 55, 133))),
+                    ],
+                  ),
+                )),
             Container(
                 margin: EdgeInsets.only(left: 20, right: 20),
                 width: w,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      "Hello",
-                      style:
-                          TextStyle(fontSize: 70, fontWeight: FontWeight.bold),
-                    ),
-                    Text(
-                      "Sign into your account",
-                      style: TextStyle(fontSize: 20, color: Colors.grey[500]),
-                    ),
                     SizedBox(
-                      height: 50,
+                      height: 90,
                     ),
                     Container(
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: Color.fromARGB(0, 255, 255, 255),
                         borderRadius: BorderRadius.circular(30),
                         boxShadow: [
-                          BoxShadow(
-                            spreadRadius: 7,
-                            blurRadius: 10,
-                            offset: Offset(1, 1),
-                            color: Colors.grey.withOpacity(0.2),
-                          ),
+                          // BoxShadow(
+                          //   spreadRadius: 7,
+                          //   blurRadius: 10,
+                          //   offset: Offset(1, 1),
+                          //   color: Colors.grey.withOpacity(0.2),
+                          // ),
                         ],
                       ),
                       child: TextField(
                         controller: emailController,
                         decoration: InputDecoration(
                             hintText: "Email",
-                            prefixIcon: Icon(Icons.email, color: Colors.pink),
+                            prefixIcon: Icon(Icons.email,
+                                color: Color.fromRGBO(57, 67, 156, 1)),
                             focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(30),
-                              borderSide:
-                                  BorderSide(color: Colors.white, width: 1.0),
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide(
+                                  color: Color.fromARGB(255, 25, 29, 69),
+                                  width: 1.0),
                             ),
                             enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(30),
+                              borderRadius: BorderRadius.circular(10),
                               borderSide:
                                   BorderSide(color: Colors.white, width: 1.0),
                             ),
@@ -91,15 +99,15 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     Container(
                       decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(30),
+                        color: Color.fromARGB(0, 255, 255, 255),
+                        borderRadius: BorderRadius.circular(10),
                         boxShadow: [
-                          BoxShadow(
-                            spreadRadius: 7,
-                            blurRadius: 10,
-                            offset: Offset(1, 1),
-                            color: Colors.grey.withOpacity(0.2),
-                          ),
+                          // BoxShadow(
+                          //   spreadRadius: 7,
+                          //   blurRadius: 10,
+                          //   offset: Offset(1, 1),
+                          //   color: Color.fromARGB(0, 158, 158, 158).withOpacity(0.2),
+                          // ),
                         ],
                       ),
                       child: TextField(
@@ -107,17 +115,19 @@ class _LoginPageState extends State<LoginPage> {
                         obscureText: true,
                         decoration: InputDecoration(
                             hintText: "Pasword",
-                            prefixIcon:
-                                Icon(Icons.password, color: Colors.pink),
+                            prefixIcon: Icon(Icons.password,
+                                color: Color.fromRGBO(57, 67, 156, 1)),
                             focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(30),
-                              borderSide:
-                                  BorderSide(color: Colors.white, width: 1.0),
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide(
+                                  color: Color.fromARGB(255, 25, 29, 69),
+                                  width: 1.0),
                             ),
                             enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(30),
-                              borderSide:
-                                  BorderSide(color: Colors.white, width: 1.0),
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide(
+                                  color: Color.fromARGB(255, 255, 255, 255),
+                                  width: 1.0),
                             ),
                             border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(30))),
@@ -126,22 +136,22 @@ class _LoginPageState extends State<LoginPage> {
                   ],
                 )),
             SizedBox(
-              height: 70,
+              height: 90,
             ),
             GestureDetector(
               onTap: signIn,
               child: Container(
-                width: w * 0.5,
-                height: h * 0.08,
+                width: w * 0.93,
+                height: h * 0.06,
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(30),
-                  color: Colors.pink,
+                  borderRadius: BorderRadius.circular(10),
+                  color: Color.fromRGBO(57, 67, 156, 1),
                 ),
                 child: Center(
                   child: Text(
-                    "Sign in",
+                    "Log in",
                     style: TextStyle(
-                        fontSize: 36,
+                        fontSize: 18,
                         fontWeight: FontWeight.bold,
                         color: Colors.white),
                   ),
@@ -150,7 +160,7 @@ class _LoginPageState extends State<LoginPage> {
             ),
           ],
         ),
-      ),
+      ]),
     ));
   }
 }

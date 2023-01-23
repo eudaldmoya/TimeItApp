@@ -28,6 +28,7 @@ dependencies:
   mobile_scanner: ^2.1.0
   flutter_launcher_icons: ^0.11.0
   provider: ^6.0.5
+  google_fonts: ^3.0.1
 
 dev_dependencies:
   flutter_test:
@@ -46,4 +47,12 @@ flutter:
   uses-material-design: true
 
   assets:
-   - assets/back2.png
+    - assets/
+    
+
+  fonts:
+    - family: Roboto
+      fonts:
+        - asset: fonts/Roboto-Light.ttf
+        - asset: fonts/Roboto-Bold.ttf
+          weight: 700
