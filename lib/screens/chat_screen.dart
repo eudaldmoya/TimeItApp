@@ -14,7 +14,7 @@ class ChatScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text("Chat")),
-      backgroundColor: Color.fromARGB(255, 250, 209, 223),
+      backgroundColor: Color.fromARGB(255, 207, 207, 242),
       body: StreamBuilder(
         stream: db.getGroupMessages(),
         builder: (BuildContext context, AsyncSnapshot<List<Message>> snapshot) {
