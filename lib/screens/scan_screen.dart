@@ -163,6 +163,7 @@ class _Scan_ScreenState extends State<Scan_Screen> {
   bool atWork = false;
   bool iniciar = false;
   bool confirmacion = false;
+  bool puedeEscanear = true;
 
   final dbb = FirebaseFirestore.instance;
   final userPath =
@@ -240,19 +241,21 @@ class _Scan_ScreenState extends State<Scan_Screen> {
                                 debugPrint('Failed to scan Barcode');
                               } else {
                                 final String code = barcode.rawValue!;
-                                if (doc['qrId'] == code) {
-                                  globals.can = true;
-                                  // debugPrint('Barcode found! $code');
-                                  //atWork = !atWork;
-                                  iniciar = true;
-                                  // dbb.doc(userPath).update({
-                                  //   'atWork': atWork,
-                                  // });
+                                if (puedeEscanear) {
+                                  if (doc['qrId'] == code) {
+                                    globals.can = true;
+                                    // debugPrint('Barcode found! $code');
+                                    //atWork = !atWork;
+                                    iniciar = true;
+                                    // dbb.doc(userPath).update({
+                                    //   'atWork': atWork,
+                                    // });
 
-                                  // ContarDias(atWork: atWork,);
-
-                                } else {
-                                  print("NO ES EL CORRECTO BRO");
+                                    // ContarDias(atWork: atWork,);
+                                    puedeEscanear = false;
+                                  } else {
+                                    print("NO ES EL CORRECTO BRO");
+                                  }
                                 }
                               }
                             }),
@@ -336,6 +339,7 @@ class _Scan_ScreenState extends State<Scan_Screen> {
                                           atWork = !atWork;
                                           print("ESTA TRABAJ");
                                           confirmacion = !confirmacion;
+                                          puedeEscanear = true;
                                         }
                                       : null,
                                   child: confirmacion
@@ -360,13 +364,15 @@ class _Scan_ScreenState extends State<Scan_Screen> {
                           child: Padding(
                             padding: const EdgeInsets.only(
                                 top: 8, left: 50, bottom: 8, right: 50),
-                            child: atWork ? Text(
-                              "Escanea el código para salir de trabajar",
-                              style: TextStyle(color: Colors.white),
-                            ) : Text(
-                              "Escanea el código para entrar a trabajar",
-                              style: TextStyle(color: Colors.white),
-                            ) ,
+                            child: atWork
+                                ? Text(
+                                    "Escanea el código para salir de trabajar",
+                                    style: TextStyle(color: Colors.white),
+                                  )
+                                : Text(
+                                    "Escanea el código para entrar a trabajar",
+                                    style: TextStyle(color: Colors.white),
+                                  ),
                           ),
                         ),
                       ),
