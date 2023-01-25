@@ -5,6 +5,8 @@ import 'package:flutter/src/widgets/framework.dart';
 
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:overlay_screen/overlay_screen.dart';
+import 'package:timeitapp/model/globals.dart' as globals;
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -18,10 +20,38 @@ class _LoginPageState extends State<LoginPage> {
   var passwordController = TextEditingController();
 
   Future signIn() async {
+    //cargar cosas
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Center(child: CircularProgressIndicator());
+      },
+    );
+
     await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: emailController.text.trim(),
         password: passwordController.text.trim());
+
+    // espera();
+
+    // globals.inicioAtWork();
+    // print('La variable atwork ${globals.atWork}');
+
+    Navigator.of(context).pop();
   }
+
+  // Future espera() async {
+  //   showDialog(
+  //     context: context,
+  //     builder: (context) {
+  //       return Center(child: CircularProgressIndicator());
+  //     },
+  //   );
+
+  //   await globals.inicioAtWork();
+
+  //   Navigator.of(context).pop();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -46,9 +76,13 @@ class _LoginPageState extends State<LoginPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text("Welcome to",
-                            style: GoogleFonts.roboto(fontSize: 40, fontWeight: FontWeight.w100)),
+                            style: GoogleFonts.roboto(
+                                fontSize: 40, fontWeight: FontWeight.w100)),
                         Text("TimeIt!",
-                            style: GoogleFonts.roboto(fontSize: 40, fontWeight: FontWeight.bold, color: Color.fromARGB(255, 47, 55, 133))),
+                            style: GoogleFonts.roboto(
+                                fontSize: 40,
+                                fontWeight: FontWeight.bold,
+                                color: Color.fromARGB(255, 47, 55, 133))),
                       ],
                     ),
                   )),
