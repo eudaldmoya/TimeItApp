@@ -224,9 +224,7 @@ class InnerSearch extends StatelessWidget {
             final finishTime = (doc['finishTime'] as Timestamp).toDate();
             diff = finishTime.difference(startTime);
             print(diff);
-          } else {
-            // TODO: Acabar...
-          }
+          } else {}
         }
         return Text('${diff ?? ""}');
       },
