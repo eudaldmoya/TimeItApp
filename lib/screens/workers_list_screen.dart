@@ -1,5 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:timeitapp/model/group_days.dart';
+import 'package:timeitapp/widgets/db.dart' as dbWork;
+import '../model/dia.dart';
+import '../model/workers_work.dart';
 
 class WorkersListScreen extends StatefulWidget {
   const WorkersListScreen({super.key});
@@ -46,29 +51,17 @@ class _WorkersListScreenState extends State<WorkersListScreen> {
                         itemCount: docs.length,
                         itemBuilder: (context, index) {
                           final doc = docs[index];
+                          final docId = doc.reference.id;
                           final name = doc['name'];
                           final surname1 = doc['firstSurname'];
                           bool isWorking = doc['atWork'];
 
-                          final today = DateTime.now();
-
-                          CollectionReference _daysCollection =
-                              FirebaseFirestore.instance.collection(
-                                  '/Company/kGCOpHgRyiIYLr4Fwuys/WorkingDays');
-
-                          Future<void> getData() async {
-                            // Get docs from collection reference
-                            QuerySnapshot querySnapshot =
-                                await _daysCollection.get();
-                            // Get data from docs and convert map to List
-                            final allData = querySnapshot.docs
-                                .map((doc) => doc.data())
-                                .toList();
-                            //for (final day in allData) {
-                            //if(day['workingDate']) {
-
-                            //}
-                            //}
+                          final todayDay = DateTime.now().day.toString();
+                          final todayMonthNum = DateTime.now().month;
+                          final todayYear = DateTime.now().year.toString();
+                          if (todayMonthNum < 10) {
+                            final todayMonth = '0${todayMonthNum}';
+                            print('${todayDay}-${todayMonth}-${todayYear}');
                           }
 
                           return ListTile(
@@ -77,8 +70,11 @@ class _WorkersListScreenState extends State<WorkersListScreen> {
                               trailing: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  Text('h'),
-                                  SizedBox(width: 5),
+                                  SizedBox(
+                                      height: 5,
+                                      width: 5,
+                                      child: HoursWorkedToday(docId: docId)),
+                                  //SizedBox(width: 5),
                                   Container(
                                     width: 10,
                                     decoration: BoxDecoration(
@@ -100,5 +96,187 @@ class _WorkersListScreenState extends State<WorkersListScreen> {
             ),
           ),
         ));
+  }
+}
+
+class HoursWorked extends StatelessWidget {
+  final String docId;
+  HoursWorked({
+    super.key,
+    required this.docId,
+  });
+
+  CollectionReference _daysCollection = FirebaseFirestore.instance
+      .collection('/Company/kGCOpHgRyiIYLr4Fwuys/WorkingDays');
+
+  @override
+  Widget build(BuildContext context) {
+    return Text('hhh');
+  }
+}
+
+//__________________________________________________________________________________________________________________
+//________________________________________________________________________________________________________________
+//__________________________________________________________HEEEEEY_______________________________________________________________}
+//__________________________________________________________________________________________________________________
+//_________________________________________________________________________________________________________________
+
+class HoursWorkedToday extends StatelessWidget {
+  final String docId;
+  HoursWorkedToday({
+    super.key,
+    required this.docId,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final db = FirebaseFirestore.instance;
+    return StreamBuilder(
+      stream: db
+          .collection('/Company/kGCOpHgRyiIYLr4Fwuys/WorkingDays')
+          .orderBy('workingDate', descending: true)
+          .limit(1)
+          .snapshots(),
+      builder: (BuildContext context,
+          AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+        if (snapshot.hasError) {
+          return ErrorWidget(snapshot.error.toString());
+        }
+        if (!snapshot.hasData) {
+          return Center(
+            child: Text('0h'),
+          );
+        }
+        final querySnap = snapshot.data!;
+        final docs = querySnap.docs;
+        print(docs);
+        print("Está entrando a este WIDGETOOOOO");
+        print('EN TOTAL NO HAY ${docs.length}');
+        return ListView.builder(
+          scrollDirection: Axis.vertical,
+          shrinkWrap: true,
+          itemCount: docs.length,
+          itemBuilder: (BuildContext context, int index) {
+            final doc = docs[index];
+            DateTime today = DateTime.now();
+            String dateStr = "${today.day}-${today.month}-${today.year}";
+            final date = (doc['workingDate'] as Timestamp).toDate();
+            final dateFire =
+                '${date.day.toString()}-${date.month.toString()}-${date.year.toString()}';
+            print('${dateStr} ${dateFire}');
+            int comprobacion = 0;
+            if (dateFire == dateStr) {
+              comprobacion++;
+              print("tiene la misma fecha");
+            }
+
+            if (comprobacion == 1) {
+              final String docIdDay = doc.id;
+              print(docIdDay);
+              print(docId);
+              return InnerSearch(
+                docId: docId,
+                docIdDay: docIdDay,
+              );
+            } else {
+              return Text('nope');
+            }
+          },
+        );
+      },
+    );
+  }
+}
+
+class InnerSearch extends StatelessWidget {
+  final String docId;
+  final String docIdDay;
+  InnerSearch({
+    super.key,
+    required this.docId,
+    required this.docIdDay,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    Duration? diff;
+    final db = FirebaseFirestore.instance;
+    return StreamBuilder(
+      stream: db
+          .collection(
+              '/Company/kGCOpHgRyiIYLr4Fwuys/WorkingDays/${docIdDay}/trabajadores/${docId}/jornadas')
+          .snapshots(),
+      builder: (BuildContext context,
+          AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+        if (snapshot.hasError) {
+          return ErrorWidget(snapshot.error.toString());
+        }
+        if (!snapshot.hasData) {
+          return Center(
+            child: Text('0h'),
+          );
+        }
+        final querySnap = snapshot.data!;
+        final docs = querySnap.docs;
+        print(docs);
+        return ListView.builder(
+          scrollDirection: Axis.vertical,
+          shrinkWrap: true,
+          itemCount: docs.length,
+          itemBuilder: (BuildContext context, int index) {
+            final doc = docs[index];
+            DateTime now = DateTime.now();
+            print(now);
+            final startTime = (doc['startTime'] as Timestamp).toDate();
+            print(startTime);
+            if (doc['finished'] == true) {
+              final finishTime = (doc['finishTime'] as Timestamp).toDate();
+              diff = finishTime.difference(startTime);
+              print(diff);
+            } else {}
+            return Text(
+              '${diff}',
+            );
+          },
+        );
+      },
+    );
+  }
+}
+
+class HW extends StatelessWidget {
+  final String docId;
+  HW({
+    super.key,
+    required this.docId,
+  });
+
+  CollectionReference colRef1 =
+      FirebaseFirestore.instance.collection('workingDays');
+
+  @override
+  Widget build(BuildContext context) {
+    final db = FirebaseFirestore.instance;
+    return Container(
+      child: StreamBuilder<QuerySnapshot>(
+        stream: colRef1
+            .orderBy('workingDate', descending: true)
+            .limit(1)
+            .snapshots(),
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (snapshot.hasError) {
+            return ErrorWidget(snapshot.error.toString());
+          }
+          if (!snapshot.hasData) {
+            return Center(
+              child: CircularProgressIndicator(),
+            );
+          }
+          Map<String, dynamic> todayDoc =
+              snapshot.data! as Map<String, dynamic>;
+          return Text('y');
+        },
+      ),
+    );
   }
 }
