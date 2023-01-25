@@ -1,15 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:timeitapp/model/User_work.dart';
 import 'package:timeitapp/model/dia.dart';
 import 'package:timeitapp/model/group_days.dart';
 import 'package:timeitapp/model/workers_work.dart';
-import 'package:timeitapp/widgets/add_day.dart';
 import 'package:timeitapp/widgets/db.dart' as work;
-import 'package:timeitapp/widgets/void_add_day.dart';
 
 class ContarDias extends StatelessWidget {
   final bool atWork;
@@ -133,19 +127,18 @@ class ContarDias extends StatelessWidget {
                         contador--;
                       }
 
-
                       print('ESTADO DEL TRABAJO $atWork');
-                      if(atWork){
-                      if (jornadaIniciada == 1) {
-                        print(
-                            'ESTA TRABAJANDO $atWork y la jornada $jornadaIniciada');
-                        print('LA JORNADA ESTA EN ${jornadaIniciada}');
-                        jornadaIniciada = 0;
-                        final JornadaUser = Jornada();
-                        work.sendJordadaUser(
-                            JornadaUser, conjuntoJornadas[j].id);
-                            contador++;
-                      }
+                      if (atWork) {
+                        if (jornadaIniciada == 1) {
+                          print(
+                              'ESTA TRABAJANDO $atWork y la jornada $jornadaIniciada');
+                          print('LA JORNADA ESTA EN ${jornadaIniciada}');
+                          jornadaIniciada = 0;
+                          final JornadaUser = Jornada();
+                          work.sendJordadaUser(
+                              JornadaUser, conjuntoJornadas[j].id);
+                          contador++;
+                        }
                       }
 
                       // if (jornadasusuario.length == 0) {

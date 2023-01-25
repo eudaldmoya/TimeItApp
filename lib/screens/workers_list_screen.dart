@@ -70,11 +70,8 @@ class _WorkersListScreenState extends State<WorkersListScreen> {
                               trailing: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  SizedBox(
-                                      height: 5,
-                                      width: 5,
-                                      child: HoursWorkedToday(docId: docId)),
-                                  //SizedBox(width: 5),
+                                  HoursWorkedToday(docId: docId),
+                                  const SizedBox(width: 15),
                                   Container(
                                     width: 10,
                                     decoration: BoxDecoration(
@@ -152,37 +149,32 @@ class HoursWorkedToday extends StatelessWidget {
         print(docs);
         print("Está entrando a este WIDGETOOOOO");
         print('EN TOTAL NO HAY ${docs.length}');
-        return ListView.builder(
-          scrollDirection: Axis.vertical,
-          shrinkWrap: true,
-          itemCount: docs.length,
-          itemBuilder: (BuildContext context, int index) {
-            final doc = docs[index];
-            DateTime today = DateTime.now();
-            String dateStr = "${today.day}-${today.month}-${today.year}";
-            final date = (doc['workingDate'] as Timestamp).toDate();
-            final dateFire =
-                '${date.day.toString()}-${date.month.toString()}-${date.year.toString()}';
-            print('${dateStr} ${dateFire}');
-            int comprobacion = 0;
-            if (dateFire == dateStr) {
-              comprobacion++;
-              print("tiene la misma fecha");
-            }
 
-            if (comprobacion == 1) {
-              final String docIdDay = doc.id;
-              print(docIdDay);
-              print(docId);
-              return InnerSearch(
-                docId: docId,
-                docIdDay: docIdDay,
-              );
-            } else {
-              return Text('nope');
-            }
-          },
-        );
+        final doc = docs[0];
+
+        DateTime today = DateTime.now();
+        String dateStr = "${today.day}-${today.month}-${today.year}";
+        final date = (doc['workingDate'] as Timestamp).toDate();
+        final dateFire =
+            '${date.day.toString()}-${date.month.toString()}-${date.year.toString()}';
+        print('${dateStr} ${dateFire}');
+        int comprobacion = 0;
+        if (dateFire == dateStr) {
+          comprobacion++;
+          print("tiene la misma fecha");
+        }
+
+        if (comprobacion == 1) {
+          final String docIdDay = doc.id;
+          print(docIdDay);
+          print(docId);
+          return InnerSearch(
+            docId: docId,
+            docIdDay: docIdDay,
+          );
+        } else {
+          return Text('nope');
+        }
       },
     );
   }
@@ -199,7 +191,6 @@ class InnerSearch extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Duration? diff;
     final db = FirebaseFirestore.instance;
     return StreamBuilder(
       stream: db
@@ -219,26 +210,25 @@ class InnerSearch extends StatelessWidget {
         final querySnap = snapshot.data!;
         final docs = querySnap.docs;
         print(docs);
-        return ListView.builder(
-          scrollDirection: Axis.vertical,
-          shrinkWrap: true,
-          itemCount: docs.length,
-          itemBuilder: (BuildContext context, int index) {
-            final doc = docs[index];
-            DateTime now = DateTime.now();
-            print(now);
-            final startTime = (doc['startTime'] as Timestamp).toDate();
-            print(startTime);
-            if (doc['finished'] == true) {
-              final finishTime = (doc['finishTime'] as Timestamp).toDate();
-              diff = finishTime.difference(startTime);
-              print(diff);
-            } else {}
-            return Text(
-              '${diff}',
-            );
-          },
-        );
+        if (docs.isEmpty) {
+          print("Is empty");
+        }
+        Duration? diff;
+        for (int index = 0; index < docs.length; index++) {
+          final doc = docs[index];
+          DateTime now = DateTime.now();
+          print(now);
+          final startTime = (doc['startTime'] as Timestamp).toDate();
+          print(startTime);
+          if (doc['finished'] == true) {
+            final finishTime = (doc['finishTime'] as Timestamp).toDate();
+            diff = finishTime.difference(startTime);
+            print(diff);
+          } else {
+            // TODO: Acabar...
+          }
+        }
+        return Text('${diff ?? ""}');
       },
     );
   }
