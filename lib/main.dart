@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterfire_ui/auth.dart';
@@ -38,6 +39,9 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
+  DocumentReference userStatus = FirebaseFirestore.instance.doc(
+      '/Company/kGCOpHgRyiIYLr4Fwuys/User/${FirebaseAuth.instance.currentUser!.uid}');
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -45,12 +49,12 @@ class _MyAppState extends State<MyApp> {
     final List<Widget> _pagesWorker = <Widget>[
       Scan_Screen(),
       ChatScreen(),
-      WorkerProfileScreen(),
+      ProfileScreen(),
     ];
     final List<Widget> _pagesAdmin = <Widget>[
       WorkersListScreen(),
       ChatScreen(),
-      EmployerProfileScreen(),
+      ProfileScreen(),
     ];
 
     return MaterialApp(
@@ -60,7 +64,24 @@ class _MyAppState extends State<MyApp> {
         primarySwatch: Colors.indigo,
       ),
       home: Scaffold(
-        body: Center(child: _pagesWorker.elementAt(_selectedIndex)),
+        body: Center(
+            child: FutureBuilder<DocumentSnapshot>(
+          future: userStatus.get(),
+          builder:
+              (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+            if (snapshot.hasError) {
+              return ErrorWidget(snapshot.error.toString());
+            }
+            if (!snapshot.hasData) {
+              return const CircularProgressIndicator();
+            }
+            final doc = snapshot.data!;
+            print(doc['admin']);
+            return doc['admin']
+                ? _pagesAdmin.elementAt(_selectedIndex)
+                : _pagesWorker.elementAt(_selectedIndex);
+          },
+        )),
         bottomNavigationBar: BottomNavigationBar(
           items: const [
             BottomNavigationBarItem(icon: Icon(Icons.camera), label: 'Scan'),
