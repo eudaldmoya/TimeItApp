@@ -172,10 +172,53 @@ class _Scan_ScreenState extends State<Scan_Screen> {
     await dbb.doc(userPath).update({
       'atWork': atWork,
     });
-    setState(() {
-      atWork = !atWork;
+    // setState(() {
+    //   atWork = !atWork;
+    // });
+  }
+
+  Future inicioAtWork() async {
+    final String id = FirebaseAuth.instance.currentUser!.uid.toString();
+
+    FirebaseFirestore.instance
+        .collection('/Company/kGCOpHgRyiIYLr4Fwuys/User/')
+        .doc(id)
+        .get()
+        .then((DocumentSnapshot documentSnapshot) {
+      if (documentSnapshot.exists) {
+        print('Document data: ${documentSnapshot.data()}');
+        dynamic nested = documentSnapshot.get(FieldPath(['atWork']));
+        print('Document data: ${nested}');
+        atWork = nested;
+        print('Document data: atwork $atWork');
+      } else {
+        print('Document does not exist on the database');
+      }
     });
   }
+
+  // bool inicioAtWork() {
+  //   bool valorInicialAtwork=false;
+  //   final db = FirebaseFirestore.instance;
+  //   StreamBuilder(
+  //     stream: db.doc(userPath).snapshots(),
+  //     builder: (BuildContext context,
+  //         AsyncSnapshot<DocumentSnapshot<Map<String, dynamic>>> snapshot) {
+  //       if (snapshot.hasError) {
+  //         return ErrorWidget(snapshot.error.toString());
+  //       }
+  //       if (!snapshot.hasData) {
+  //         return const CircularProgressIndicator();
+  //       }
+
+  //       final doc = snapshot.data!;
+  //       valorInicialAtwork = doc['atWork'];
+  //       return Text("data");
+  //     },
+  //   );
+
+  //   return valorInicialAtwork;
+  // }
 
   void llamar() {
     GroupJornada();
@@ -186,8 +229,25 @@ class _Scan_ScreenState extends State<Scan_Screen> {
   @override
   void initState() {
     super.initState();
+    final String id = FirebaseAuth.instance.currentUser!.uid.toString();
     timer = Timer.periodic(
         Duration(seconds: 5), (Timer t) => checkForNewSharedLists());
+
+    FirebaseFirestore.instance
+    .collection('/Company/kGCOpHgRyiIYLr4Fwuys/User/')
+    .doc(id)
+    .get()
+    .then((DocumentSnapshot documentSnapshot) {
+      if (documentSnapshot.exists) {
+        print('Document data: ${documentSnapshot.data()}');
+        dynamic nested = documentSnapshot.get(FieldPath(['atWork']));
+        print('Document data: ${nested}');
+        atWork = nested;
+        print('Document data: atwork $atWork');
+      } else {
+        print('Document does not exist on the database');
+      }
+    });
   }
 
   @override
@@ -209,6 +269,8 @@ class _Scan_ScreenState extends State<Scan_Screen> {
 
   @override
   Widget build(BuildContext context) {
+    print('Atwork del paquete vale $atWork');
+    print('Atwork de las globales vale ${globals.atWork}');
     final db = FirebaseFirestore.instance;
     final puede = false;
     return MaterialApp(
@@ -331,15 +393,13 @@ class _Scan_ScreenState extends State<Scan_Screen> {
                                 ElevatedButton(
                                   onPressed: globals.can
                                       ? () {
-                                          dbb.doc(userPath).update({
-                                            'atWork': atWork,
-                                          });
                                           globals.connected = true;
                                           globals.can = false;
                                           atWork = !atWork;
-                                          print("ESTA TRABAJ");
+                                          print("ESTA TRABAJ $atWork");
                                           confirmacion = !confirmacion;
                                           puedeEscanear = true;
+                                          updateAtWork();
                                         }
                                       : null,
                                   child: confirmacion
