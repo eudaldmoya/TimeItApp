@@ -231,7 +231,7 @@ class _Scan_ScreenState extends State<Scan_Screen> {
     super.initState();
     final String id = FirebaseAuth.instance.currentUser!.uid.toString();
     timer = Timer.periodic(
-        Duration(seconds: 5), (Timer t) => checkForNewSharedLists());
+        Duration(seconds: 1), (Timer t) => checkForNewSharedLists());
 
     FirebaseFirestore.instance
     .collection('/Company/kGCOpHgRyiIYLr4Fwuys/User/')
