@@ -10,7 +10,7 @@ class MessageBox extends StatefulWidget {
 
 class _MessageBoxState extends State<MessageBox> {
   final TextEditingController controllermen = TextEditingController();
-
+  bool puedeenviar = false;
   void dispose() {
     controllermen.dispose();
     super.dispose();
@@ -19,10 +19,6 @@ class _MessageBoxState extends State<MessageBox> {
   _send(String text) {
     widget.onSend(text);
     controllermen.clear();
-  }
-
-  void formatNickname() {
-    controllermen.text = controllermen.text.replaceAll(" ", "");
   }
 
   @override
@@ -38,8 +34,24 @@ class _MessageBoxState extends State<MessageBox> {
               child: Padding(
                 padding: const EdgeInsets.only(left: 16, right: 16),
                 child: TextField(
+                  onChanged: ((value) {
+                    if (!controllermen.text.trim().isEmpty) {
+                      setState(() {
+                        puedeenviar = true;
+                      });
+                    } else {
+                      setState(() {
+                        puedeenviar = false;
+                      });
+                    }
+                  }),
                   controller: controllermen,
-                  onSubmitted: _send,
+                  onSubmitted:(value) {
+                    if (!controllermen.text.trim().isEmpty) {
+                        _send(controllermen.text);
+                        puedeenviar = false;
+                      }
+                  },
                   decoration: InputDecoration(border: InputBorder.none),
                 ),
               ),
@@ -53,13 +65,14 @@ class _MessageBoxState extends State<MessageBox> {
             shape: CircleBorder(),
             child: IconButton(
               icon: Icon(Icons.send),
-              onPressed: () {
-                formatNickname();
-
-                if (controllermen.text.isNotEmpty) {
-                  _send(controllermen.text);
-                }
-              },
+              onPressed: puedeenviar
+                  ? () {
+                      if (!controllermen.text.trim().isEmpty) {
+                        _send(controllermen.text);
+                        puedeenviar = false;
+                      }
+                    }
+                  : null,
               color: Colors.white,
             ),
           )

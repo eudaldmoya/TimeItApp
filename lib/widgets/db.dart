@@ -54,6 +54,9 @@ Future<void> crearWorkerColeccion(WorkersWorking wrk, iddeldocumento) async {
 
   docUser.set(json);
 }
+
+
+
 Stream<List<Jornada>> GetJornadas(idDia) {
   return FirebaseFirestore.instance
       .collection(
