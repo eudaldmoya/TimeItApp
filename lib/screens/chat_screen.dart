@@ -1,8 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:timeitapp/widgets/db.dart' as db;
 import 'package:timeitapp/model/message.dart';
+import 'package:timeitapp/widgets/db.dart' as db;
 import 'package:timeitapp/widgets/message_box.dart';
 
 import '../widgets/message_list.dart';
@@ -26,9 +25,9 @@ class ChatScreen extends StatelessWidget {
               child: CircularProgressIndicator(),
             );
           }
-          
-          print('EN TOTAL HAY MENSAJES ${snapshot.data!.length}');
-          // final docs = qsnap.docs;
+
+         
+
           return Stack(
             children: [
               LayoutBuilder(builder: (context, BoxConstraints constraints) {
@@ -41,9 +40,8 @@ class ChatScreen extends StatelessWidget {
                     child: MessageList(messages: snapshot.data!),
                   ),
                   MessageBox(onSend: (text) {
-                    final User = FirebaseAuth.instance.currentUser!
-                        .uid; // CON ESTO DE AQUI TENEMOS LA AUTENTIFICACION DEL USUARIO QUE HA ESCRITO EL MENSAJE, A PARTIR DE AHI, PODREMOS SABER SI HA ESCRITO EL O NO LAS COSAS
-                    print(User);
+                    final User = FirebaseAuth.instance.currentUser!.uid;
+                
                     final message = Message(text, User);
                     db.sendMessage(message);
                   }),

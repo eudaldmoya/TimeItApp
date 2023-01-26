@@ -1,12 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
-
-import 'package:get/get.dart';
+import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:overlay_screen/overlay_screen.dart';
-import 'package:timeitapp/model/globals.dart' as globals;
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -20,7 +14,6 @@ class _LoginPageState extends State<LoginPage> {
   var passwordController = TextEditingController();
 
   Future signIn() async {
-    //cargar cosas
     showDialog(
       context: context,
       builder: (context) {
@@ -32,26 +25,8 @@ class _LoginPageState extends State<LoginPage> {
         email: emailController.text.trim(),
         password: passwordController.text.trim());
 
-    // espera();
-
-    // globals.inicioAtWork();
-    // print('La variable atwork ${globals.atWork}');
-
     Navigator.of(context).pop();
   }
-
-  // Future espera() async {
-  //   showDialog(
-  //     context: context,
-  //     builder: (context) {
-  //       return Center(child: CircularProgressIndicator());
-  //     },
-  //   );
-
-  //   await globals.inicioAtWork();
-
-  //   Navigator.of(context).pop();
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -99,14 +74,7 @@ class _LoginPageState extends State<LoginPage> {
                         decoration: BoxDecoration(
                           color: Color.fromARGB(0, 255, 255, 255),
                           borderRadius: BorderRadius.circular(30),
-                          boxShadow: [
-                            // BoxShadow(
-                            //   spreadRadius: 7,
-                            //   blurRadius: 10,
-                            //   offset: Offset(1, 1),
-                            //   color: Colors.grey.withOpacity(0.2),
-                            // ),
-                          ],
+                          boxShadow: [],
                         ),
                         child: TextField(
                           controller: emailController,
@@ -136,14 +104,6 @@ class _LoginPageState extends State<LoginPage> {
                         decoration: BoxDecoration(
                           color: Color.fromARGB(0, 255, 255, 255),
                           borderRadius: BorderRadius.circular(10),
-                          boxShadow: [
-                            // BoxShadow(
-                            //   spreadRadius: 7,
-                            //   blurRadius: 10,
-                            //   offset: Offset(1, 1),
-                            //   color: Color.fromARGB(0, 158, 158, 158).withOpacity(0.2),
-                            // ),
-                          ],
                         ),
                         child: TextField(
                           controller: passwordController,

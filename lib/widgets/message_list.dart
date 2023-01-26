@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:timeitapp/widgets/message_widget.dart';
 
@@ -18,8 +17,6 @@ class MessageList extends StatelessWidget {
       reverse: true,
       itemCount: messages.length,
       itemBuilder: (context, index) {
-        // final doc = docs[index];
-        
         return Padding(
           padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
           child: MessageWidget(messages[index]),
@@ -28,4 +25,3 @@ class MessageList extends StatelessWidget {
     );
   }
 }
-

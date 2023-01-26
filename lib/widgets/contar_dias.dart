@@ -37,24 +37,17 @@ class ContarDias extends StatelessWidget {
           }
 
           List<ColeccionJornadas> conjuntoJornadas = snapshot.data!;
-          print("ENTRA EN EL WIDGET");
+
           DateTime today = DateTime.now();
           String dateStr = "${today.day}-${today.month}-${today.year}";
           for (int i = 0; i < conjuntoJornadas.length; i++) {
-            print('DIA ${conjuntoJornadas[i].ddmmyy}');
             if (conjuntoJornadas[i].ddmmyy == dateStr) {
               aciertos = 1;
               comprobacion = 1;
-
-              //  print("tiene la misma fecha");
-
             }
           }
 
-          print('VALOR DE ACIERTOS NUEVO $aciertos');
-
           if (aciertos == 0) {
-            print('he entrado $aciertos');
             final fecha = ColeccionJornadas();
             final String coleccion =
                 '/Company/kGCOpHgRyiIYLr4Fwuys/WorkingDays/';
@@ -62,24 +55,17 @@ class ContarDias extends StatelessWidget {
             aciertos = 1;
             creado = 1;
             iddocumento = fecha.id;
-            print('IDDELDOCUMENTO $iddocumento');
           }
 
           for (int j = 0; j < conjuntoJornadas.length; j++) {
             if (conjuntoJornadas[j].ddmmyy == dateStr) {
               if ((comprobacion == 1) || (creado == 1)) {
-                print(
-                    'DENTRO EL ID QUE TIENE DENTRO ES ${conjuntoJornadas[j].id}');
                 final objeto = WorkersWorking();
                 final String iddocumento = conjuntoJornadas[j].id;
                 work.crearWorkerColeccion(objeto, iddocumento);
                 int lookToUser =
-                    0; //SI ESTO ES 1 QUIERE DECIR QUE HAY UN DOCUMENTO CON EL USUARIO, SI ES 0 QUIERE DECIR QUE NO HAY UNO Y POR LO CUAL, SE TIENE QUE CREAR UNO
+                    0; 
 
-                // return Text("data");
-                /////////ESTO ES PARA AÑADIR EN CADA DOCUMENTO UN DOCUMENTO CON EL ID DEL USUARIO
-                print('CONJUNTO DE JORNADAS ID ${conjuntoJornadas[j].id}');
-                // return Text("caca");
                 final dbUser = FirebaseFirestore.instance;
 
                 return StreamBuilder(
@@ -94,30 +80,10 @@ class ContarDias extends StatelessWidget {
                         return const CircularProgressIndicator();
                       }
                       List<Jornada> jornadasusuario = snapshot.data!;
-                      //QUIERO QUE CUANDO SE HAGA UNA JORNADA SE GASTE,
-                      //LA CONDICION SERA QUE ESTE VALOR TIENE QUE SER 1, DE ESTA FORMA NO
-                      //ENTRARA EN BUCLE
 
-                      // if (jornadaIniciada == 1) {
-                      //   for (int k = 0; k < jornadasusuario.length; j++) {
-                      //     if (!jornadasusuario[k].finished) {
-                      //       work.finishedJornada(
-                      //           conjuntoJornadas[j].id, jornadasusuario[k].id);
-
-                      //           jornadacerrada = true;
-                      //     }
-
-                      //   }
-
-                      //   if(jornadacerrada =)
-
-                      print(
-                          'ESTA TRABAJANDO NUMERO DE JORNADAS $atWork ${jornadasusuario.length}');
                       if (!atWork) {
                         for (int h = 0; h < 1; h++) {
                           if (jornadasusuario[h].finished == false) {
-                            print(
-                                "ESTA TRABAJDNO MENTIRA ${jornadasusuario[h].id}");
                             work.finishedJornada(
                                 conjuntoJornadas[j].id, jornadasusuario[h].id);
                           }
@@ -127,12 +93,8 @@ class ContarDias extends StatelessWidget {
                         contador--;
                       }
 
-                      print('ESTADO DEL TRABAJO $atWork');
                       if (atWork) {
                         if (jornadaIniciada == 1) {
-                          print(
-                              'ESTA TRABAJANDO $atWork y la jornada $jornadaIniciada');
-                          print('LA JORNADA ESTA EN ${jornadaIniciada}');
                           jornadaIniciada = 0;
                           final JornadaUser = Jornada();
                           work.sendJordadaUser(
@@ -141,24 +103,7 @@ class ContarDias extends StatelessWidget {
                         }
                       }
 
-                      // if (jornadasusuario.length == 0) {
-                      //     final JornadaUser = Jornada();
-                      //     work.sendJordadaUser(
-                      //         JornadaUser, conjuntoJornadas[index].id);
-                      //   }
-                      //   int jornadascompletas = 0; //ESTO SERVIRÁ PARA VER SI HA ACABADO O NO TODAS LAS JORNADAS
-                      //   for (int j = 0; j < jornadasusuario.length; j++) {
-                      //     //COMPROBAR SI HAN ACABADO O NO LAS JORNADAS
-                      //       if(jornadasusuario[j].finished){
-
-                      //       }
-                      //   }
-
                       return Text("");
-
-                      //SE TIENE QUE COMPROBAR SI ES DE OTRO USUARIO O NO PARA PONER LA JORNADA
-                      //EN EL DOC ESTA LA PARTE DE LOOKTOUSER PARA COMPROBARLO
-                      //AHORA MISMO CREA LA JORNADA, LO TIENE QUE HACER CUANDO LO ESCANEA, Y CUANDO VUELVA A ESCANEAR, CUANDO EL ITWORK SEA FALSE, QUE HAGA LO OTRO
                     });
               }
             }

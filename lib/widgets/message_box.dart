@@ -20,9 +20,9 @@ class _MessageBoxState extends State<MessageBox> {
     widget.onSend(text);
     controllermen.clear();
   }
-  void formatNickname(){
+
+  void formatNickname() {
     controllermen.text = controllermen.text.replaceAll(" ", "");
-    print("aqui estoy");
   }
 
   @override
@@ -33,21 +33,14 @@ class _MessageBoxState extends State<MessageBox> {
         children: [
           Expanded(
             child: Material(
-              //El material es el que crea el cuadro blanco de base
-              elevation: 2, //crea una sombra debajo del texto
-              shape:
-                  StadiumBorder(), //coge la forme de ovulo, la sombra se adapta a este
+              elevation: 2,
+              shape: StadiumBorder(),
               child: Padding(
-                padding: const EdgeInsets.only(
-                    left: 16,
-                    right:
-                        16), //Añadimos espacios a los lados para que el texto no esté tan pegado
+                padding: const EdgeInsets.only(left: 16, right: 16),
                 child: TextField(
                   controller: controllermen,
                   onSubmitted: _send,
-                  decoration: InputDecoration(
-                      border: InputBorder
-                          .none), //Se va la ralla que tiene de serie el textfield
+                  decoration: InputDecoration(border: InputBorder.none),
                 ),
               ),
             ),
@@ -56,13 +49,12 @@ class _MessageBoxState extends State<MessageBox> {
             width: 8,
           ),
           Material(
-            color: Theme.of(context)
-                .primaryColor, //SE PONE EL COLOR DEL TEMA QUE HAY PREDEFINIDO EN LA APLICACION, POR ESO SALE EN AZUL
+            color: Theme.of(context).primaryColor,
             shape: CircleBorder(),
             child: IconButton(
               icon: Icon(Icons.send),
               onPressed: () {
-                  formatNickname();
+                formatNickname();
 
                 if (controllermen.text.isNotEmpty) {
                   _send(controllermen.text);

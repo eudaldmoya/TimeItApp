@@ -13,9 +13,7 @@ class MessageWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     if (msg.userId == FirebaseAuth.instance.currentUser!.uid) {
       return Row(
-        // crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.end,
-
         children: [
           Material(
             color: Color.fromARGB(255, 57, 67, 156),

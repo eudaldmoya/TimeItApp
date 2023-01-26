@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 class Message {
   String id, text, userId;
@@ -20,7 +19,7 @@ class Message {
   Message(this.text, this.userId)
       : datetime = DateTime.now(),
         id =
-            'id'; //NO ENTIENDO PORQUE NECESITA EL ID SI LUEGO PONE LO QUE EL QUIERE EN EL FIRESTORE
+            'id'; 
             
 
 
