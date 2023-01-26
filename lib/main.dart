@@ -54,7 +54,7 @@ class _MyAppState extends State<MyApp> {
     final List<Widget> _pagesAdmin = <Widget>[
       WorkersListScreen(),
       ChatScreen(),
-      ProfileScreen(),
+      EmployerProfileScreen(),
     ];
 
     return MaterialApp(
