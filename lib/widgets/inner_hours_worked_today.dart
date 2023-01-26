@@ -49,7 +49,7 @@ class InnerSearch extends StatelessWidget {
             diff = diff + now.difference(startTime);
           }
         }
-        return Text('${diff ?? ""}');
+        return Text('${diff}');
       },
     );
   }

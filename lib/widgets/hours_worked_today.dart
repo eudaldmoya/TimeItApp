@@ -58,7 +58,7 @@ class HoursWorkedToday extends StatelessWidget {
             docIdDay: docIdDay,
           );
         } else {
-          return Text('nope');
+          return Text('0h');
         }
       },
     );

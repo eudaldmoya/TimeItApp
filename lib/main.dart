@@ -7,6 +7,7 @@ import 'package:timeitapp/firebase_options.dart';
 import 'package:timeitapp/screens/chat_screen.dart';
 import 'package:timeitapp/screens/employer_profile_screen.dart';
 import 'package:timeitapp/screens/scan_screen.dart';
+import 'package:timeitapp/screens/worker_profile_screen.dart';
 import 'package:timeitapp/screens/workers_list_screen.dart';
 import 'package:timeitapp/widgets/auth_gate.dart';
 
@@ -48,7 +49,7 @@ class _MyAppState extends State<MyApp> {
     final List<Widget> _pagesWorker = <Widget>[
       Scan_Screen(),
       ChatScreen(),
-      ProfileScreen(),
+      WorkerProfileScreen(),
     ];
     final List<Widget> _pagesAdmin = <Widget>[
       WorkersListScreen(),
