@@ -32,6 +32,13 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   int _selectedIndex = 0;
+  bool admin = false;
+
+  void onAdmin(bool admin) {
+    setState(() {
+      admin = admin;
+    });
+  }
 
   void _onItemTapped(int index) {
     setState(() {
@@ -58,6 +65,7 @@ class _MyAppState extends State<MyApp> {
     ];
 
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         brightness: Brightness.light,
         primaryColor: Color.fromARGB(255, 57, 67, 156),
@@ -83,7 +91,7 @@ class _MyAppState extends State<MyApp> {
           },
         )),
         bottomNavigationBar: BottomNavigationBar(
-          items: const [
+          items: [
             BottomNavigationBarItem(icon: Icon(Icons.camera), label: 'Scan'),
             BottomNavigationBarItem(icon: Icon(Icons.chat), label: 'Chat'),
             BottomNavigationBarItem(icon: Icon(Icons.person), label: 'User'),

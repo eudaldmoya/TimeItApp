@@ -36,8 +36,12 @@ class _LoginPageState extends State<LoginPage> {
         body: SafeArea(
       child: Stack(children: [
         LayoutBuilder(builder: (context, BoxConstraints constraints) {
-          return Image.asset('assets/back2.png',
-              fit: BoxFit.cover, width: constraints.maxWidth);
+          return Image.asset(
+            'assets/back2.png',
+            fit: BoxFit.cover,
+            height: constraints.maxHeight,
+            width: constraints.maxWidth,
+          );
         }),
         SingleChildScrollView(
           child: Column(

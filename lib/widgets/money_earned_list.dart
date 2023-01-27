@@ -44,7 +44,9 @@ class MoneyEarned extends StatelessWidget {
                       children: [
                         Text('Day ${index + 1}'),
                         SizedBox(width: 50),
-                        Container(width: w*0.7, child: CalculatedMoney(docId: docId))
+                        Container(
+                            width: w * 0.7,
+                            child: CalculatedMoney(docId: docId))
                       ],
                     ),
                   );

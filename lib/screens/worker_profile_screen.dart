@@ -104,8 +104,10 @@ class WorkerProfileScreen extends StatelessWidget {
                   },
                 ),
                 MoneyEarned(),
-                SizedBox(height: h*0.1,),
-                 LogOut(w, h)
+                SizedBox(
+                  height: h * 0.1,
+                ),
+                LogOut(w, h)
               ]),
             ),
           ),
@@ -205,13 +207,14 @@ class CalculatedMoney extends StatelessWidget {
               return Row(
                 children: [
                   LinearPercentIndicator(
-                    width: w*0.4,
-                    lineHeight: h*0.03,
+                    width: w * 0.44,
+                    lineHeight: h * 0.03,
                     percent: porcentaje / 100,
                     barRadius: const Radius.circular(30),
                     backgroundColor: Colors.grey,
                     progressColor: Color.fromARGB(255, 57, 67, 156),
                   ),
+                  SizedBox(width: 50),
                   Text('${minutes * querySnap['priceHour']} €'),
                 ],
               );
