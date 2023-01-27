@@ -1,32 +1,47 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class AddUser {
-  String id, text, userId;
-  DateTime datetime;
+class User {
+  String id, dni, firstSurname, name, photoPath, secondSurname;
+  bool admin, atWork;
+  int priceHour;
 
-  AddUser.fromFirestore(DocumentSnapshot doc)
+  User.fromFirestore(DocumentSnapshot doc)
       : id = doc.id,
-        text = doc['text'],
-        datetime = (doc['datetime'] as Timestamp).toDate(),
-        userId = doc['userId'];
+        dni = doc['dni'],
+        firstSurname = doc['firstSurname'],
+        name = doc['name'],
+        photoPath = doc['photoPath'],
+        secondSurname = doc['secondSurname'],
+        admin = doc['admin'],
+        atWork = doc['atWork'],
+        priceHour = doc['priceHour'];
+        
 
-  Map<String, dynamic> toFirestore() => {
-        'text': text,
-        'datetime': datetime,
-        'userId' : userId,
-      };
+  // Map<String, dynamic> toFirestore() => {
 
-  AddUser(this.text, this.userId)
-      : datetime = DateTime.now(),
-        id =
-            'id'; 
+  //       'dni': dni,
+  //       'firstSurname': firstSurname,
+  //       'name' : name,
+  //       'photoPath': '',
+  //       'secondSurname': secondSurname,
+  //       'admin' : admin,
+        
+  //       'atWork': atWork,
+  //       'priceHour' : priceHour,
+
+  //     };
+
+  // User(this.text, this.userId)
+  //     : datetime = DateTime.now(),
+  //       id =
+  //           'id'; 
             
 
 
-  String get hhmm => '${datetime.hour.toString().padLeft(2,'0')}:${datetime.minute.toString().padLeft(2,'0')}';
+  // String get hhmm => '${datetime.hour.toString().padLeft(2,'0')}:${datetime.minute.toString().padLeft(2,'0')}';
 
 }
 
-List<AddUser> toAddUserList(QuerySnapshot query) {
-  return query.docs.map((doc) => AddUser.fromFirestore(doc)).toList();
+List<User> toUserList(QuerySnapshot query) {
+  return query.docs.map((doc) => User.fromFirestore(doc)).toList();
 }

@@ -8,4 +8,4 @@ bool can = false;
 bool connected = false;
 
  bool atWork = false;
-
+num superior = 0;

@@ -8,6 +8,8 @@ class MoneyEarned extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double w = MediaQuery.of(context).size.width;
+    double h = MediaQuery.of(context).size.height;
     final db = FirebaseFirestore.instance;
     return Column(
       children: [
@@ -34,12 +36,17 @@ class MoneyEarned extends StatelessWidget {
                 itemBuilder: (context, index) {
                   final doc = docs[index];
                   final docId = doc.reference.id;
-                  return Row(
-                    children: [
-                      Text('Day ${index + 1}'),
-                      SizedBox(width: 50),
-                      //Container(width: 40, child: CalculatedMoney(docId: docId))
-                    ],
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 15),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.max,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text('Day ${index + 1}'),
+                        SizedBox(width: 50),
+                        Container(width: w*0.7, child: CalculatedMoney(docId: docId))
+                      ],
+                    ),
                   );
                 },
               );

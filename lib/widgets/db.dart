@@ -100,3 +100,10 @@ Future<void> finishedJornada(iddeldocumentodia, iddeldocumentojornada) async {
 }
 
 
+// Stream<List<Message>> getDineroJornadas(docId) {
+//   return FirebaseFirestore.instance
+//       .collection(
+//           '/Company/kGCOpHgRyiIYLr4Fwuys/User/').doc(docId)
+//       .snapshots()
+//       .map(toMessageList);
+// }

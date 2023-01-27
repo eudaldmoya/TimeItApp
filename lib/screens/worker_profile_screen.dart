@@ -1,8 +1,12 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-
+import 'package:percent_indicator/percent_indicator.dart';
+import 'package:timeitapp/model/globals.dart' as globals;
+import 'package:timeitapp/widgets/Log_out.dart';
 import '../widgets/money_earned_list.dart';
 
 class WorkerProfileScreen extends StatelessWidget {
@@ -17,6 +21,8 @@ class WorkerProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final db = FirebaseFirestore.instance;
+    double w = MediaQuery.of(context).size.width;
+    double h = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(title: Text('Worker Profile')),
       body: Stack(
@@ -81,7 +87,7 @@ class WorkerProfileScreen extends StatelessWidget {
                     final doc = snapshot.data!;
                     final name = doc['companyName'];
                     return Padding(
-                      padding: const EdgeInsets.only(top: 20.0),
+                      padding: const EdgeInsets.only(top: 20.0, bottom: 100),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -98,6 +104,8 @@ class WorkerProfileScreen extends StatelessWidget {
                   },
                 ),
                 MoneyEarned(),
+                SizedBox(height: h*0.1,),
+                 LogOut(w, h)
               ]),
             ),
           ),
@@ -120,6 +128,10 @@ class CalculatedMoney extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    num segundos;
+    num hours;
+    num minutes = 0;
+
     final db = FirebaseFirestore.instance;
     return StreamBuilder(
       stream: db
@@ -142,20 +154,31 @@ class CalculatedMoney extends StatelessWidget {
         for (int index = 0; index < docs.length; index++) {
           final doc = docs[index];
           DateTime now = DateTime.now();
-          print(now);
+          // print(now);
           final startTime = (doc['startTime'] as Timestamp).toDate();
-          print(startTime);
+          // print(startTime);
           if (doc['finished'] == true) {
             final finishTime = (doc['finishTime'] as Timestamp).toDate();
             diff = diff + finishTime.difference(startTime);
-            print(diff);
+            //   print(diff);
           } else {
             diff = diff + now.difference(startTime);
           }
+          segundos = diff.inSeconds / 60;
+          hours = diff.inHours * 60;
+          minutes = diff.inMinutes + segundos + hours;
+
+          print('EL DIFF VALE $minutes');
+          print('SUPERIOR VALE ${globals.superior}');
+          if (minutes > globals.superior) {
+            globals.superior = minutes;
+            print("VALE en el if ${globals.superior}");
+          }
+          print('EL SUPERIOR ES ${globals.superior}');
         }
         return StreamBuilder(
-            stream: db
-                .collection('User')
+            stream: FirebaseFirestore.instance
+                .collection('/Company/kGCOpHgRyiIYLr4Fwuys/User/')
                 .doc('${FirebaseAuth.instance.currentUser!.uid}')
                 .snapshots(),
             builder: (BuildContext context,
@@ -165,13 +188,33 @@ class CalculatedMoney extends StatelessWidget {
                 return ErrorWidget(snapshot.error.toString());
               }
               if (!snapshot.hasData) {
+                print("NO TIENE DATA");
                 return Center(
                   child: Text('0h'),
                 );
               }
+              double w = MediaQuery.of(context).size.width;
+              double h = MediaQuery.of(context).size.height;
               final querySnap = snapshot.data!;
-              print(querySnap['priceHour']);
-              return Text('${diff * querySnap['priceHour']}');
+              double porcentaje = (minutes / globals.superior) * 100;
+              // print(querySnap);
+
+              //return Text("hola");
+
+              print('EL PORCENTAJE ES ${porcentaje}');
+              return Row(
+                children: [
+                  LinearPercentIndicator(
+                    width: w*0.4,
+                    lineHeight: h*0.03,
+                    percent: porcentaje / 100,
+                    barRadius: const Radius.circular(30),
+                    backgroundColor: Colors.grey,
+                    progressColor: Color.fromARGB(255, 57, 67, 156),
+                  ),
+                  Text('${minutes * querySnap['priceHour']} €'),
+                ],
+              );
             }); //Text('${diff}');
       },
     );

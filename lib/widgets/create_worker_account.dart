@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:timeitapp/model/globals.dart';
+import 'package:timeitapp/widgets/Log_out.dart';
 
 import 'new_user_textfield.dart';
 
@@ -23,15 +24,6 @@ class _CreateWorkerAccountState extends State<CreateWorkerAccount> {
   var priceHourController = TextEditingController();
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
-
-  Future signOut() async {
-    try {
-      return await _auth.signOut();
-    } catch (error) {
-      print(error.toString());
-      return null;
-    }
-  }
 
   Future createUser() async {
     showDialog(
@@ -145,28 +137,7 @@ class _CreateWorkerAccountState extends State<CreateWorkerAccount> {
           ),
         ),
         SizedBox(height: 20),
-        GestureDetector(
-          onTap: (() {
-            signOut();
-          }),
-          child: Container(
-            width: w * 0.93,
-            height: h * 0.06,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              color: Color.fromARGB(255, 220, 15, 0),
-            ),
-            child: Center(
-              child: Text(
-                "Sign out",
-                style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white),
-              ),
-            ),
-          ),
-        ),
+        LogOut(w, h),
       ],
     );
   }
